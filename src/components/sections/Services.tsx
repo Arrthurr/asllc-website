@@ -3,7 +3,7 @@ import { motion } from 'framer-motion';
 import { useInView } from 'react-intersection-observer';
 import { CheckCircle, Cloud, Users, Zap, LineChart } from 'lucide-react';
 import Section from '../ui/Section';
-import { Card } from '../ui/card';
+import Card from '../ui/Card';
 
 const services = [
   {

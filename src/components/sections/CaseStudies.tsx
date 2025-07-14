@@ -3,7 +3,7 @@ import { motion } from 'framer-motion';
 import { useInView } from 'react-intersection-observer';
 import { ArrowRight } from 'lucide-react';
 import Section from '../ui/Section';
-import { Card, CardContent } from '../ui/card';
+import Card, { CardContent } from '../ui/Card';
 import { Button } from '../ui/button';
 
 const caseStudies = [

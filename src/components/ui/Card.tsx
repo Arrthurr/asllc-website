@@ -28,4 +28,18 @@ const Card: React.FC<CardProps> = ({
   );
 };
 
+interface CardContentProps {
+  className?: string;
+  children: React.ReactNode;
+}
+
+const CardContent: React.FC<CardContentProps> = ({ className, children }) => {
+  return (
+    <div className={clsx('p-6', className)}>
+      {children}
+    </div>
+  );
+};
+
 export default Card;
+export { CardContent };

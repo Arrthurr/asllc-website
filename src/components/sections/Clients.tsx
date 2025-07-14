@@ -2,7 +2,7 @@ import React from 'react';
 import { motion } from 'framer-motion';
 import { useInView } from 'react-intersection-observer';
 import Section from '../ui/Section';
-import { Card } from '../ui/card';
+import Card from '../ui/Card';
 
 const Clients: React.FC = () => {
   const [ref, inView] = useInView({
@@ -22,14 +22,6 @@ const Clients: React.FC = () => {
     { 
       name: 'Joy for Books',
       logo: '/clients/joy-for-books.png',
-    },
-    { 
-      name: 'Nex',
-      logo: '/clients/nex.png',
-    },
-    { 
-      name: 'Waveform',
-      logo: '/clients/waveform.png',
     },
     { 
       name: 'Darklight',
