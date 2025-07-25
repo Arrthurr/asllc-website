@@ -1,7 +1,6 @@
 import React, { useState } from 'react';
 import { motion } from 'framer-motion';
-import { Phone, MapPin, CheckCircle } from 'lucide-react';
-import emailjs from '@emailjs/browser';
+import { Phone, MapPin } from 'lucide-react';
 import Section from '../ui/Section';
 import { Button } from '../ui/button';
 
@@ -15,7 +14,6 @@ const Contact: React.FC = () => {
   });
   
   const [isSubmitting, setIsSubmitting] = useState(false);
-  const [submitted, setSubmitted] = useState(false);
   const [error, setError] = useState('');
   
   const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement | HTMLTextAreaElement>) => {
@@ -23,47 +21,10 @@ const Contact: React.FC = () => {
     setFormState(prev => ({ ...prev, [name]: value }));
   };
   
-  const handleSubmit = async (e: React.FormEvent) => {
-    e.preventDefault();
+  const handleSubmit = (e: React.FormEvent) => {
     setIsSubmitting(true);
-    setError('');
-
-    if (!import.meta.env.VITE_EMAILJS_SERVICE_ID || 
-        !import.meta.env.VITE_EMAILJS_TEMPLATE_ID || 
-        !import.meta.env.VITE_EMAILJS_PUBLIC_KEY) {
-      setError('Email service is not properly configured.');
-      setIsSubmitting(false);
-      return;
-    }
-
-    try {
-      await emailjs.send(
-        import.meta.env.VITE_EMAILJS_SERVICE_ID,
-        import.meta.env.VITE_EMAILJS_TEMPLATE_ID,
-        {
-          from_name: formState.name,
-          from_email: formState.email,
-          company: formState.company,
-          service: formState.service,
-          message: formState.message,
-        },
-        import.meta.env.VITE_EMAILJS_PUBLIC_KEY
-      );
-
-      setSubmitted(true);
-      setFormState({
-        name: '',
-        email: '',
-        company: '',
-        service: '',
-        message: '',
-      });
-    } catch (err) {
-      setError('Failed to send message. Please try again later.');
-      console.error('EmailJS error:', err);
-    } finally {
-      setIsSubmitting(false);
-    }
+    // Let the browser handle the native form submission
+    // The form will navigate to the action URL or submit to the current page
   };
   
   const contactInfo = [
@@ -139,18 +100,20 @@ const Contact: React.FC = () => {
           <div className="bg-white rounded-lg shadow-xl p-8">
             <h3 className="text-2xl font-bold mb-6">Request a Consultation</h3>
             
-            {submitted ? (
-              <div className="flex flex-col items-center justify-center py-8">
-                <div className="text-primary-500 mb-4">
-                  <CheckCircle className="w-16 h-16" />
-                </div>
-                <h4 className="text-xl font-bold mb-2">Thank You!</h4>
-                <p className="text-gray-600 text-center">
-                  Your message has been sent successfully. We'll get back to you shortly.
+            <form
+              name="contact"
+              method="POST"
+              action="/success"
+              data-netlify="true"
+              data-netlify-honeypot="bot-field"
+              onSubmit={handleSubmit}
+              className="space-y-6"
+            >
+                <input type="hidden" name="form-name" value="contact" />
+                <input type="hidden" name="subject" value="New Contact Request" />
+                <p className="hidden">
+                  <label>Don't fill this out: <input name="bot-field" /></label>
                 </p>
-              </div>
-            ) : (
-              <form onSubmit={handleSubmit} className="space-y-6">
                 {error && (
                   <div className="p-4 bg-red-50 text-red-600 rounded-md">
                     {error}
@@ -249,7 +212,6 @@ const Contact: React.FC = () => {
                   </Button>
                 </div>
               </form>
-            )}
           </div>
         </motion.div>
       </div>
