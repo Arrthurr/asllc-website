@@ -13,19 +13,19 @@ const Clients: React.FC = () => {
   const clients = [
     { 
       name: 'HG Jones Associates',
-      logo: '/clients/hg-jones.png',
+      logo: '/public//clients/hg-jones.png',
     },
     { 
       name: 'DMDL',
-      logo: '/clients/dmdl.png',
+      logo: '/public/clients/dmdl.png',
     },
     { 
       name: 'Joy for Books',
-      logo: '/clients/joy-for-books.png',
+      logo: '/public/clients/joy-for-books.png',
     },
     { 
       name: 'Darklight',
-      logo: '/clients/darklight.png',
+      logo: '/public/clients/darklight.png',
     },
   ];
 
