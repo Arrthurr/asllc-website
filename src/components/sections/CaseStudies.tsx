@@ -1,5 +1,6 @@
 import React from 'react';
 import { motion } from 'framer-motion';
+import { useInView } from 'react-intersection-observer';
 import { ArrowUpRight } from 'lucide-react';
 import Section from '../ui/Section';
 import Card, { CardContent } from '../ui/Card';
@@ -23,6 +24,11 @@ const work = [
 ];
 
 const CaseStudies: React.FC = () => {
+  const [ref, inView] = useInView({
+    triggerOnce: true,
+    threshold: 0.1,
+  });
+
   const containerVariants = {
     hidden: { opacity: 0 },
     visible: {
@@ -49,8 +55,7 @@ const CaseStudies: React.FC = () => {
         <div className="lg:col-span-4">
           <motion.div
             initial={{ opacity: 0, x: -20 }}
-            whileInView={{ opacity: 1, x: 0 }}
-            viewport={{ once: true, amount: 0.1 }}
+            animate={inView ? { opacity: 1, x: 0 } : { opacity: 0, x: -20 }}
             transition={{ duration: 0.5 }}
           >
             <h2 className="text-3xl md:text-4xl font-bold mb-6">Things I've built</h2>
@@ -63,10 +68,10 @@ const CaseStudies: React.FC = () => {
 
         <div className="lg:col-span-8">
           <motion.div
+            ref={ref}
             variants={containerVariants}
             initial="hidden"
-            whileInView="visible"
-            viewport={{ once: true, amount: 0.1 }}
+            animate={inView ? 'visible' : 'hidden'}
             className="grid grid-cols-1 md:grid-cols-2 gap-6"
           >
             {work.map((project, index) => (
