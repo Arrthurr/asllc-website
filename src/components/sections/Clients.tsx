@@ -11,21 +11,21 @@ const Clients: React.FC = () => {
   });
 
   const clients = [
-    { 
+    {
       name: 'HG Jones Associates',
-      logo: '/public//clients/hg-jones.png',
+      logo: '/clients/hg-jones.png',
     },
-    { 
+    {
       name: 'DMDL',
-      logo: '/public/clients/dmdl.png',
+      logo: '/clients/dmdl.png',
     },
-    { 
+    {
       name: 'Joy for Books',
-      logo: '/public/clients/joy-for-books.png',
+      logo: '/clients/joy-for-books.png',
     },
-    { 
+    {
       name: 'Darklight',
-      logo: '/public/clients/darklight.png',
+      logo: '/clients/darklight.png',
     },
   ];
 
@@ -48,30 +48,16 @@ const Clients: React.FC = () => {
     },
   };
 
-  const testimonials = [
-    {
-      quote: "Arturo Solo helped us reduce our Microsoft 365 costs by 30% while actually improving how our team uses the tools. Their guidance was invaluable.",
-      author: "Mark Ingram",
-      position: "Operations Manager",
-      company: "DMDL, Inc.",
-    },
-    {
-      quote: "Working with Arturo Solo transformed how we use Google Workplace. Our team's collaboration and productivity have improved significantly.",
-      author: "Joy Triche",
-      position: "Founder",
-      company: "Joy for Books",
-    },
-  ];
-
   return (
     <Section id="clients" background="primary">
       <div className="text-center mb-16">
-        <h2 className="text-3xl md:text-4xl font-bold mb-4">Trusted by Businesses Like Yours</h2>
+        <h2 className="text-3xl md:text-4xl font-bold mb-4">Trusted by businesses like yours</h2>
         <p className="text-xl text-muted-foreground max-w-2xl mx-auto">
-          We've helped companies across industries optimize their cloud services and achieve tangible results.
+          Small businesses have trusted me with their technology for years. Now I'm bringing
+          that same hands-on approach to building AI that actually works for them.
         </p>
       </div>
-      
+
       <motion.div
         ref={ref}
         variants={containerVariants}
@@ -85,40 +71,34 @@ const Clients: React.FC = () => {
             variants={itemVariants}
           >
             <Card className="h-24 flex items-center justify-center p-4">
-              <img 
-                src={client.logo} 
-                alt={client.name} 
+              <img
+                src={client.logo}
+                alt={client.name}
                 className="max-h-full max-w-full object-contain"
               />
             </Card>
           </motion.div>
         ))}
       </motion.div>
-      
-      <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
-        {testimonials.map((testimonial, index) => (
-          <motion.div
-            key={index}
-            initial={{ opacity: 0, y: 20 }}
-            animate={inView ? { opacity: 1, y: 0 } : { opacity: 0, y: 20 }}
-            transition={{ duration: 0.5, delay: 0.3 + (index * 0.1) }}
-          >
-            <Card className="p-8">
-              <svg className="w-12 h-12 text-primary/30 mb-6" fill="currentColor" viewBox="0 0 24 24">
-                <path d="M4.583 17.321C3.553 16.227 3 15 3 13.011c0-3.5 2.457-6.637 6.03-8.188l.893 1.378c-3.335 1.804-3.987 4.145-4.247 5.621.537-.278 1.24-.375 1.929-.311 1.804.167 3.226 1.648 3.226 3.489a3.5 3.5 0 01-3.5 3.5c-1.073 0-2.099-.49-2.748-1.179zm10 0C13.553 16.227 13 15 13 13.011c0-3.5 2.457-6.637 6.03-8.188l.893 1.378c-3.335 1.804-3.987 4.145-4.247 5.621.537-.278 1.24-.375 1.929-.311 1.804.167 3.226 1.648 3.226 3.489a3.5 3.5 0 01-3.5 3.5c-1.073 0-2.099-.49-2.748-1.179z"></path>
-              </svg>
-              <p className="text-muted-foreground mb-6 italic">"{testimonial.quote}"</p>
-              <div className="flex items-center">
-                <div className="w-12 h-12 bg-muted rounded-full mr-4"></div>
-                <div>
-                  <div className="font-bold">{testimonial.author}</div>
-                  <div className="text-sm text-muted-foreground">{testimonial.position}, {testimonial.company}</div>
-                </div>
-              </div>
-            </Card>
-          </motion.div>
-        ))}
-      </div>
+
+      <motion.div
+        initial={{ opacity: 0, y: 20 }}
+        animate={inView ? { opacity: 1, y: 0 } : { opacity: 0, y: 20 }}
+        transition={{ duration: 0.5, delay: 0.3 }}
+        className="max-w-2xl mx-auto"
+      >
+        <Card className="p-8 text-center">
+          <div className="text-sm font-semibold uppercase tracking-wide text-primary mb-4">
+            Who I help
+          </div>
+          <p className="text-lg text-muted-foreground">
+            Picture a CEO who was handed a Copilot license and told to "use AI" — but has no
+            roadmap, no time, and no one to actually build anything. That's exactly who I help.
+            You don't need another tool or another strategy deck. You need someone to ship the
+            first working thing.
+          </p>
+        </Card>
+      </motion.div>
     </Section>
   );
 };
