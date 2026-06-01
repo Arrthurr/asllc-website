@@ -38,8 +38,9 @@ const Header: React.FC<HeaderProps> = ({ scrolled }) => {
   const toggleMenu = () => setIsMenuOpen(prev => !prev);
   
   const navLinks = [
-    { name: 'Services', href: '#services' },
+    { name: 'AI Jumpstart', href: '#services' },
     { name: 'About', href: '#about' },
+    { name: 'Work', href: '#work' },
     { name: 'Clients', href: '#clients' },
     { name: 'Contact', href: '#contact' },
   ];
@@ -66,11 +67,11 @@ const Header: React.FC<HeaderProps> = ({ scrolled }) => {
               {link.name}
             </a>
           ))}
-          <a 
-            href="#contact" 
+          <a
+            href="#contact"
             className="btn btn-primary"
           >
-            Get Started
+            Start your AI Jumpstart
           </a>
         </nav>
         
@@ -105,12 +106,12 @@ const Header: React.FC<HeaderProps> = ({ scrolled }) => {
                   {link.name}
                 </a>
               ))}
-              <a 
-                href="#contact" 
+              <a
+                href="#contact"
                 className="btn btn-primary text-center"
                 onClick={() => setIsMenuOpen(false)}
               >
-                Get Started
+                Start your AI Jumpstart
               </a>
             </div>
           </motion.div>

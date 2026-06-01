@@ -6,32 +6,30 @@ const Footer: React.FC = () => {
   const currentYear = new Date().getFullYear();
   
   const footerLinks = [
-    { 
-      title: 'Company', 
+    {
+      title: 'Company',
       links: [
-        { name: 'About Us', href: '#about' },
-        { name: 'Our Team', href: '#team' },
-        /* { name: 'Careers', href: '#careers' }, */
+        { name: 'About Arturo', href: '#about' },
+        { name: 'Work', href: '#work' },
         { name: 'Contact', href: '#contact' },
-      ] 
+      ]
     },
-    { 
-      title: 'Services', 
+    {
+      title: 'What I Do',
       links: [
-        { name: 'Microsoft 365', href: '#services' },
-        { name: 'Google Workplace', href: '#services' },
-        /* { name: 'Salesforce', href: '#services' }, */
-        { name: 'Cloud Migration', href: '#services' },
-      ] 
+        { name: 'AI Jumpstart', href: '#services' },
+        { name: 'Custom AI Builds', href: '#services' },
+        { name: 'How It Works', href: '#services' },
+      ]
     },
-    { 
-      title: 'Resources', 
+    {
+      title: 'Resources',
       links: [
         { name: 'Blog', href: '#blog' },
-        { name: 'Case Studies', href: '#case-studies' },
+        { name: 'Work', href: '#work' },
         /* { name: 'Guides', href: '#guides' }, */
         { name: 'FAQs', href: '#faqs' },
-      ] 
+      ]
     },
   ];
   
@@ -49,7 +47,7 @@ const Footer: React.FC = () => {
           <div className="lg:col-span-2">
             <Logo variant="light" />
             <p className="mt-4 text-gray-400 max-w-md">
-              Helping small businesses maximize their cloud service subscriptions with expert guidance and managed solutions.
+              I help small businesses put AI to work — building and shipping real, running AI workflows, not slide decks. Start with an AI Jumpstart.
             </p>
             <div className="flex space-x-4 mt-6">
               {socialLinks.map((link) => (
