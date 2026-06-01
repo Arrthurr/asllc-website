@@ -14,14 +14,13 @@ const Contact: React.FC = () => {
   });
   
   const [isSubmitting, setIsSubmitting] = useState(false);
-  const [error, setError] = useState('');
-  
+
   const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement | HTMLTextAreaElement>) => {
     const { name, value } = e.target;
     setFormState(prev => ({ ...prev, [name]: value }));
   };
   
-  const handleSubmit = (e: React.FormEvent) => {
+  const handleSubmit = () => {
     setIsSubmitting(true);
     // Let the browser handle the native form submission
     // The form will navigate to the action URL or submit to the current page
@@ -50,9 +49,9 @@ const Contact: React.FC = () => {
           animate={{ opacity: 1, y: 0 }}
           transition={{ duration: 0.6 }}
         >
-          <h2 className="text-3xl md:text-4xl font-bold mb-6">Get in Touch</h2>
+          <h2 className="text-3xl md:text-4xl font-bold mb-6">Let's build your first AI win</h2>
           <p className="text-xl text-gray-600 mb-8">
-            Ready to optimize your cloud services? Contact us for a free consultation and let's discuss how we can help your business thrive.
+            Tell me a bit about your business and what you're trying to do with AI. I'll reply personally, and we'll figure out the right place to start — usually an AI Jumpstart.
           </p>
           
           <div className="space-y-6 mb-10">
@@ -98,7 +97,7 @@ const Contact: React.FC = () => {
           transition={{ duration: 0.6, delay: 0.2 }}
         >
           <div className="bg-white rounded-lg shadow-xl p-8">
-            <h3 className="text-2xl font-bold mb-6">Request a Consultation</h3>
+            <h3 className="text-2xl font-bold mb-6">Tell me about your business</h3>
             
             <form
               name="contact"
@@ -114,12 +113,6 @@ const Contact: React.FC = () => {
                 <p className="hidden">
                   <label>Don't fill this out: <input name="bot-field" /></label>
                 </p>
-                {error && (
-                  <div className="p-4 bg-red-50 text-red-600 rounded-md">
-                    {error}
-                  </div>
-                )}
-                
                 <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
                   <div>
                     <label htmlFor="name" className="block text-sm font-medium text-gray-700 mb-1">
@@ -169,7 +162,7 @@ const Contact: React.FC = () => {
                   </div>
                   <div>
                     <label htmlFor="service" className="block text-sm font-medium text-gray-700 mb-1">
-                      Service of Interest
+                      What are you interested in?
                     </label>
                     <select
                       id="service"
@@ -178,18 +171,17 @@ const Contact: React.FC = () => {
                       onChange={handleChange}
                       className="w-full px-4 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-primary-500"
                     >
-                      <option value="">Select a service</option>
-                      <option value="microsoft365">Microsoft 365 Optimization</option>
-                      <option value="googleWorkplace">Google Workplace Management</option>
-                      <option value="license">License Optimization</option>
-                      <option value="migration">Cloud Migration</option>
+                      <option value="">What are you interested in?</option>
+                      <option value="ai-jumpstart">AI Jumpstart</option>
+                      <option value="custom-ai-build">Custom AI build / implementation</option>
+                      <option value="not-sure">Not sure yet — let's talk</option>
                     </select>
                   </div>
                 </div>
                 
                 <div>
                   <label htmlFor="message" className="block text-sm font-medium text-gray-700 mb-1">
-                    How can we help?
+                    What are you trying to do with AI?
                   </label>
                   <textarea
                     id="message"

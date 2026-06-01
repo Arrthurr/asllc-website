@@ -1,6 +1,6 @@
 import React from 'react';
 import { motion } from 'framer-motion';
-import { ArrowRight } from 'lucide-react';
+import { ArrowRight, Smartphone, BarChart3 } from 'lucide-react';
 import { Button } from '../ui/button';
 
 const Hero: React.FC = () => {
@@ -20,22 +20,23 @@ const Hero: React.FC = () => {
             transition={{ duration: 0.6 }}
           >
             <h1 className="text-4xl md:text-5xl lg:text-6xl font-bold leading-tight text-gray-900 mb-6">
+              I build{" "}
               <span className="relative">
-                Maximize
+                working AI
                 <span className="absolute -bottom-2 left-0 w-full h-2 bg-primary-300 opacity-50"></span>
               </span>{" "}
-              your cloud investments
+              into your business
             </h1>
             <p className="text-xl text-gray-600 mb-8 max-w-lg">
-              We help small businesses optimize their cloud subscriptions, reduce costs, and unlock the full potential of Microsoft 365 and Google Workplace.
+              Not slide decks or strategy memos — real, running software. I'm Arturo, and I ship production AI tools at a speed traditional shops can't match. I've already built and launched two of my own.
             </p>
             <div className="flex flex-col sm:flex-row gap-4">
               <Button size="lg" asChild>
-                <a href="#contact">Schedule a Consultation</a>
+                <a href="#services">Start your AI Jumpstart</a>
               </Button>
               <Button variant="outline" size="lg" asChild>
-                <a href="#services">
-                  Our Services
+                <a href="#work">
+                  See what I've built
                   <ArrowRight className="ml-2 h-4 w-4" />
                 </a>
               </Button>
@@ -50,35 +51,29 @@ const Hero: React.FC = () => {
           >
             <div className="absolute -top-10 -left-10 w-72 h-72 bg-secondary-100 rounded-full -z-10" />
             <div className="bg-white rounded-xl shadow-xl p-8 transform rotate-3">
-              <div className="flex items-center mb-6">
+              <div className="flex items-center mb-4">
                 <div className="w-12 h-12 rounded-full bg-primary-100 flex items-center justify-center">
-                  <div className="w-6 h-6 rounded-full bg-primary-500" />
+                  <Smartphone className="w-6 h-6 text-primary-600" />
                 </div>
                 <div className="ml-4">
-                  <h3 className="font-bold">Microsoft 365</h3>
-                  <p className="text-sm text-gray-500">Optimization</p>
+                  <h3 className="font-bold">Attendance App</h3>
+                  <p className="text-sm text-gray-500">Location-aware · in beta</p>
                 </div>
               </div>
-              <div className="h-2 bg-gray-100 rounded-full mb-2">
-                <div className="h-2 bg-primary-500 rounded-full w-[70%]" />
-              </div>
-              <p className="text-sm text-gray-500">70% Optimized</p>
+              <p className="text-sm text-gray-500">A staff check-in app I built end-to-end with AI tools.</p>
             </div>
-            
+
             <div className="bg-white rounded-xl shadow-xl p-8 transform -rotate-2 mt-8 ml-12">
-              <div className="flex items-center mb-6">
+              <div className="flex items-center mb-4">
                 <div className="w-12 h-12 rounded-full bg-secondary-100 flex items-center justify-center">
-                  <div className="w-6 h-6 rounded-full bg-secondary-500" />
+                  <BarChart3 className="w-6 h-6 text-secondary-600" />
                 </div>
                 <div className="ml-4">
-                  <h3 className="font-bold">Google Workplace</h3>
-                  <p className="text-sm text-gray-500">Utilization</p>
+                  <h3 className="font-bold">Head Start Data Site</h3>
+                  <p className="text-sm text-gray-500">Live · Texas grantees</p>
                 </div>
               </div>
-              <div className="h-2 bg-gray-100 rounded-full mb-2">
-                <div className="h-2 bg-secondary-500 rounded-full w-[85%]" />
-              </div>
-              <p className="text-sm text-gray-500">85% Utilized</p>
+              <p className="text-sm text-gray-500">A public data-viz site, designed and shipped solo.</p>
             </div>
           </motion.div>
         </div>

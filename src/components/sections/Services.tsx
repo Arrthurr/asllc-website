@@ -1,30 +1,28 @@
 import React from 'react';
 import { motion } from 'framer-motion';
 import { useInView } from 'react-intersection-observer';
-import { CheckCircle, Cloud, Users, Zap, LineChart } from 'lucide-react';
+import { Target, Hammer, Rocket } from 'lucide-react';
 import Section from '../ui/Section';
 import Card from '../ui/Card';
 
-const services = [
+const steps = [
   {
-    title: 'Microsoft 365 Optimization',
-    description: 'Get the most out of your Microsoft 365 subscription with our expert configuration and training services.',
-    icon: <Cloud className="w-12 h-12 text-primary" />,
+    title: 'We find your first AI win',
+    description:
+      "We start with a short, focused conversation to pinpoint one high-leverage workflow in your business that AI can actually move the needle on — no boil-the-ocean strategy decks.",
+    icon: <Target className="w-10 h-10 text-primary" />,
   },
   {
-    title: 'Google Workplace Management',
-    description: 'Maximize productivity and collaboration with optimized Google Workplace tools and integrations.',
-    icon: <Users className="w-12 h-12 text-primary" />,
+    title: 'I build it',
+    description:
+      "Then I build it. Using the same AI-native tools I use to ship my own products, I design and develop a working AI workflow — fast, and tailored to how you actually operate.",
+    icon: <Hammer className="w-10 h-10 text-primary" />,
   },
   {
-    title: 'License Optimization',
-    description: 'Reduce costs by ensuring you have the right licenses for your actual usage and needs.',
-    icon: <Zap className="w-12 h-12 text-primary" />,
-  },
-  {
-    title: 'Cloud Migration',
-    description: 'Seamlessly transition your business operations to the cloud with minimal disruption.',
-    icon: <LineChart className="w-12 h-12 text-primary" />,
+    title: 'You walk away with it running',
+    description:
+      "At the end you have a real, running AI workflow in your hands — not a report telling you what you could do. From there we have a clear path to the next build.",
+    icon: <Rocket className="w-10 h-10 text-primary" />,
   },
 ];
 
@@ -57,41 +55,45 @@ const Services: React.FC = () => {
   return (
     <Section id="services" background="light">
       <div className="text-center mb-16">
-        <h2 className="text-3xl md:text-4xl font-bold mb-4">Our Services</h2>
+        <span className="inline-block px-3 py-1 mb-4 text-xs font-semibold tracking-wide uppercase bg-primary/10 text-primary rounded-full">
+          The AI Jumpstart
+        </span>
+        <h2 className="text-3xl md:text-4xl font-bold mb-4">
+          Your first AI win, actually built
+        </h2>
         <p className="text-xl text-muted-foreground max-w-2xl mx-auto">
-          We help small businesses maximize their cloud investments through expert guidance and hands-on optimization.
+          The AI Jumpstart is how we start working together. In a few weeks I build and
+          hand you one working AI workflow running in your business — and it's the first
+          step into bigger builds, not a one-off.
         </p>
       </div>
-      
+
       <motion.div
         ref={ref}
         variants={containerVariants}
         initial="hidden"
         animate={inView ? 'visible' : 'hidden'}
-        className="grid grid-cols-1 md:grid-cols-2 gap-8"
+        className="grid grid-cols-1 md:grid-cols-3 gap-8"
       >
-        {services.map((service, index) => (
+        {steps.map((step, index) => (
           <motion.div key={index} variants={itemVariants}>
-            <Card className="h-full p-8">
-              <div className="mb-6">
-                {service.icon}
+            <Card className="relative h-full p-8 overflow-hidden">
+              <span
+                className="pointer-events-none absolute -top-4 right-2 text-8xl font-bold text-primary/10 select-none"
+                aria-hidden="true"
+              >
+                {index + 1}
+              </span>
+              <div className="relative">
+                <div className="mb-6">
+                  {step.icon}
+                </div>
+                <div className="text-sm font-semibold text-primary mb-2">
+                  Step {index + 1}
+                </div>
+                <h3 className="text-xl font-bold mb-3">{step.title}</h3>
+                <p className="text-muted-foreground">{step.description}</p>
               </div>
-              <h3 className="text-xl font-bold mb-3">{service.title}</h3>
-              <p className="text-muted-foreground">{service.description}</p>
-              <ul className="mt-4 space-y-2">
-                <li className="flex items-center text-sm text-muted-foreground">
-                  <CheckCircle className="w-4 h-4 text-primary mr-2" />
-                  Assessment & Strategy
-                </li>
-                <li className="flex items-center text-sm text-muted-foreground">
-                  <CheckCircle className="w-4 h-4 text-primary mr-2" />
-                  Implementation
-                </li>
-                <li className="flex items-center text-sm text-muted-foreground">
-                  <CheckCircle className="w-4 h-4 text-primary mr-2" />
-                  Training & Support
-                </li>
-              </ul>
             </Card>
           </motion.div>
         ))}
