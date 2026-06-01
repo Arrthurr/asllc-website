@@ -14,14 +14,13 @@ const Contact: React.FC = () => {
   });
   
   const [isSubmitting, setIsSubmitting] = useState(false);
-  const [error, setError] = useState('');
-  
+
   const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement | HTMLTextAreaElement>) => {
     const { name, value } = e.target;
     setFormState(prev => ({ ...prev, [name]: value }));
   };
   
-  const handleSubmit = (e: React.FormEvent) => {
+  const handleSubmit = () => {
     setIsSubmitting(true);
     // Let the browser handle the native form submission
     // The form will navigate to the action URL or submit to the current page
@@ -114,12 +113,6 @@ const Contact: React.FC = () => {
                 <p className="hidden">
                   <label>Don't fill this out: <input name="bot-field" /></label>
                 </p>
-                {error && (
-                  <div className="p-4 bg-red-50 text-red-600 rounded-md">
-                    {error}
-                  </div>
-                )}
-                
                 <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
                   <div>
                     <label htmlFor="name" className="block text-sm font-medium text-gray-700 mb-1">
