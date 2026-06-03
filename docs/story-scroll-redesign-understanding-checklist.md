@@ -23,6 +23,7 @@ Use this as the running checklist for what the human should understand about thi
 - [ ] How AI Jumpstart becomes the concrete commercial entry point.
 - [ ] What this impacts: route composition, header/footer anchors, scroll behavior, and contact conversion.
 - [ ] What remains deferred: named in-development products, case-study system, automated browser tests.
+- [ ] How the durable solution doc in `docs/solutions/design-patterns/story-scroll-founder-builder-homepage.md` captures the reusable pattern for future agents and redesign work.
 
 ---
 
