@@ -28,6 +28,8 @@ export default {
         accent: {
           DEFAULT: "#FF6E35",
           foreground: "#ffffff",
+          deep: "#C2410C",
+          deeper: "#9A3412",
         },
         muted: {
           DEFAULT: "#f1f5f9",
