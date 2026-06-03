@@ -21,19 +21,19 @@ interface StoryPanelProps {
 const themeClasses: Record<StoryTheme, string> = {
   light: 'bg-white text-primary',
   dark: 'bg-primary text-white',
-  accent: 'bg-accent text-white',
+  accent: 'bg-accent-deep text-white',
 };
 
 const mutedTextClasses: Record<StoryTheme, string> = {
-  light: 'text-primary/70',
-  dark: 'text-white/72',
-  accent: 'text-white/78',
+  light: 'text-primary/85',
+  dark: 'text-white/90',
+  accent: 'text-white/95',
 };
 
 const lineClasses: Record<StoryTheme, string> = {
   light: 'bg-primary/18',
   dark: 'bg-white/20',
-  accent: 'bg-white/28',
+  accent: 'bg-white/40',
 };
 
 const StoryPanel: React.FC<StoryPanelProps> = ({
@@ -120,8 +120,8 @@ const StoryPanel: React.FC<StoryPanelProps> = ({
                     className={cn(
                       'rounded-full border px-3 py-1 text-xs font-bold uppercase tracking-[0.2em]',
                       theme === 'light'
-                        ? 'border-primary/15 text-primary/70'
-                        : 'border-white/25 text-white/78'
+                        ? 'border-primary/30 text-primary'
+                        : 'border-white/50 text-white'
                     )}
                   >
                     {word}
@@ -146,8 +146,8 @@ const StoryPanel: React.FC<StoryPanelProps> = ({
                 className={cn(
                   'group inline-flex items-center justify-center rounded-full px-6 py-4 text-base font-bold transition-transform hover:-translate-y-0.5 focus:outline-none focus-visible:ring-2 focus-visible:ring-offset-2 md:text-lg',
                   theme === 'accent'
-                    ? 'bg-white text-accent focus-visible:ring-white focus-visible:ring-offset-accent'
-                    : 'bg-accent text-white focus-visible:ring-accent focus-visible:ring-offset-primary'
+                    ? 'bg-white text-accent-deeper focus-visible:ring-white focus-visible:ring-offset-accent-deep'
+                    : 'bg-accent-deep text-white focus-visible:ring-accent-deep focus-visible:ring-offset-primary'
                 )}
               >
                 {cta.label}

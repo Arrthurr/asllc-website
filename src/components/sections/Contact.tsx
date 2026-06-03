@@ -63,7 +63,7 @@ const Contact: React.FC = () => {
                   </div>
                   <div>
                     <h3 className="font-semibold text-lg">{item.label}</h3>
-                    <a href={item.link} className="text-gray-600 hover:text-primary-600 transition-colors">
+                    <a href={item.link} className="text-gray-600 hover:text-primary transition-colors">
                       {item.value}
                     </a>
                   </div>
@@ -115,7 +115,7 @@ const Contact: React.FC = () => {
                       name="name"
                       value={formState.name}
                       onChange={handleChange}
-                      className="w-full px-4 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-primary-500"
+                      className="w-full px-4 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-primary"
                       required
                       minLength={2}
                     />
@@ -130,7 +130,7 @@ const Contact: React.FC = () => {
                       name="email"
                       value={formState.email}
                       onChange={handleChange}
-                      className="w-full px-4 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-primary-500"
+                      className="w-full px-4 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-primary"
                       required
                     />
                   </div>
@@ -147,7 +147,7 @@ const Contact: React.FC = () => {
                       name="company"
                       value={formState.company}
                       onChange={handleChange}
-                      className="w-full px-4 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-primary-500"
+                      className="w-full px-4 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-primary"
                       required
                     />
                   </div>
@@ -160,7 +160,7 @@ const Contact: React.FC = () => {
                       name="service"
                       value={formState.service}
                       onChange={handleChange}
-                      className="w-full px-4 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-primary-500"
+                      className="w-full px-4 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-primary"
                     >
                       <option value="">What are you interested in?</option>
                       <option value="ai-jumpstart">AI Jumpstart</option>
@@ -180,7 +180,7 @@ const Contact: React.FC = () => {
                     value={formState.message}
                     onChange={handleChange}
                     rows={4}
-                    className="w-full px-4 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-primary-500"
+                    className="w-full px-4 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-primary"
                   ></textarea>
                 </div>
                 

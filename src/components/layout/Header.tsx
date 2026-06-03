@@ -82,10 +82,12 @@ const Header: React.FC<HeaderProps> = ({ scrolled, storyTheme }) => {
         </nav>
         
         {/* Mobile Menu Button */}
-        <button 
+        <button
           className={cn(
-            'rounded-sm md:hidden focus:outline-none focus-visible:ring-2 focus-visible:ring-accent focus-visible:ring-offset-2',
-            isLightHeader && !isMenuOpen ? 'text-white' : 'text-primary'
+            'rounded-full p-2 transition-colors md:hidden focus:outline-none focus-visible:ring-2 focus-visible:ring-accent focus-visible:ring-offset-2',
+            isLightHeader && !isMenuOpen
+              ? 'bg-transparent text-white'
+              : 'bg-white/95 text-primary shadow-sm backdrop-blur-sm'
           )}
           onClick={toggleMenu}
           aria-label={isMenuOpen ? "Close menu" : "Open menu"}

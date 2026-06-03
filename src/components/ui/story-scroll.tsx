@@ -9,14 +9,16 @@ export type StoryTheme = 'light' | 'dark' | 'accent';
 interface StoryScrollProps {
   children: React.ReactNode;
   className?: string;
-  onActiveThemeChange?: (theme: StoryTheme) => void;
 }
 
 const isStoryTheme = (value: string | null): value is StoryTheme =>
   value === 'light' || value === 'dark' || value === 'accent';
 
 const useMediaQuery = (query: string) => {
-  const [matches, setMatches] = useState(false);
+  const [matches, setMatches] = useState(() => {
+    if (typeof window === 'undefined') return false;
+    return window.matchMedia(query).matches;
+  });
 
   useEffect(() => {
     const mediaQuery = window.matchMedia(query);
@@ -34,7 +36,6 @@ const useMediaQuery = (query: string) => {
 const StoryScroll: React.FC<StoryScrollProps> = ({
   children,
   className,
-  onActiveThemeChange,
 }) => {
   const containerRef = useRef<HTMLDivElement>(null);
   const panelRefs = useRef<HTMLDivElement[]>([]);
@@ -42,20 +43,26 @@ const StoryScroll: React.FC<StoryScrollProps> = ({
   const isMobile = useMediaQuery('(max-width: 767px)');
   const panels = useMemo(() => React.Children.toArray(children), [children]);
   const shouldStack = prefersReducedMotion || isMobile || panels.length <= 1;
+  const [activeIndex, setActiveIndex] = useState(0);
+  const activeIndexRef = useRef(-1);
 
   const setActiveTheme = useCallback((index: number) => {
+    if (activeIndexRef.current === index) return;
+    activeIndexRef.current = index;
+    setActiveIndex(index);
+
     const panel = panelRefs.current[index];
     const theme = isStoryTheme(panel?.dataset.storyTheme ?? null)
       ? panel.dataset.storyTheme
       : 'light';
 
-    onActiveThemeChange?.(theme);
     window.dispatchEvent(
       new CustomEvent('story-theme-change', { detail: { theme } })
     );
-  }, [onActiveThemeChange]);
+  }, []);
 
   useEffect(() => {
+    activeIndexRef.current = -1;
     setActiveTheme(0);
   }, [panels.length, setActiveTheme]);
 
@@ -86,6 +93,7 @@ const StoryScroll: React.FC<StoryScrollProps> = ({
       if (shouldStack || !containerRef.current || panels.length <= 1) return;
 
       gsap.registerPlugin(ScrollTrigger);
+      ScrollTrigger.normalizeScroll(true);
 
       const panelElements = panelRefs.current.filter(Boolean);
       gsap.set(panelElements, {
@@ -100,9 +108,16 @@ const StoryScroll: React.FC<StoryScrollProps> = ({
         scrollTrigger: {
           trigger: containerRef.current,
           start: 'top top',
-          end: `+=${panels.length * 850}`,
+          end: () => `+=${(panels.length - 1) * window.innerHeight}`,
           pin: true,
-          scrub: 0.85,
+          scrub: 0.4,
+          snap: {
+            snapTo: 1 / (panels.length - 1),
+            duration: { min: 0.3, max: 0.6 },
+            delay: 0.1,
+            ease: 'power2.inOut',
+            directional: false,
+          },
           anticipatePin: 1,
           invalidateOnRefresh: true,
           onUpdate: (self) => {
@@ -163,6 +178,7 @@ const StoryScroll: React.FC<StoryScrollProps> = ({
         const element = React.isValidElement(panel) ? panel : null;
         const theme = isStoryTheme(element?.props?.theme ?? null) ? element.props.theme : 'light';
         const label = typeof element?.props?.label === 'string' ? element.props.label : `Story panel ${index + 1}`;
+        const isInactivePinnedPanel = !shouldStack && index !== activeIndex;
 
         return (
           <div
@@ -177,6 +193,8 @@ const StoryScroll: React.FC<StoryScrollProps> = ({
             data-story-panel={index + 1}
             data-story-theme={theme}
             aria-label={label}
+            aria-hidden={isInactivePinnedPanel || undefined}
+            {...(isInactivePinnedPanel ? { inert: '' } : {})}
           >
             {panel}
           </div>

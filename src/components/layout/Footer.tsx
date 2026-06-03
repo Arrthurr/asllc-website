@@ -51,7 +51,7 @@ const Footer: React.FC = () => {
                 <a 
                   key={link.name}
                   href={link.href}
-                  className="text-gray-400 hover:text-primary-300 transition-colors"
+                  className="text-gray-400 hover:text-white transition-colors"
                   aria-label={link.name}
                 >
                   {link.icon}
@@ -68,7 +68,7 @@ const Footer: React.FC = () => {
                   <li key={link.name}>
                     <a 
                       href={link.href}
-                      className="text-gray-400 hover:text-primary-300 transition-colors"
+                      className="text-gray-400 hover:text-white transition-colors"
                     >
                       {link.name}
                     </a>

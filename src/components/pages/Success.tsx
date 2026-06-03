@@ -15,7 +15,7 @@ const Success: React.FC = () => {
           className="bg-white rounded-lg shadow-xl p-8"
         >
           <div className="flex flex-col items-center justify-center py-8">
-            <div className="text-primary-500 mb-4">
+            <div className="text-primary mb-4">
               <CheckCircle className="w-16 h-16" />
             </div>
             <h1 className="text-3xl font-bold mb-4">Thank You!</h1>
