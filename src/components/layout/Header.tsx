@@ -2,12 +2,15 @@ import React, { useState, useEffect } from 'react';
 import { Menu, X } from 'lucide-react';
 import { motion, AnimatePresence } from 'framer-motion';
 import Logo from '../ui/Logo';
+import { cn } from '@/lib/utils';
+import type { StoryTheme } from '../ui/story-scroll';
 
 interface HeaderProps {
   scrolled: boolean;
+  storyTheme: StoryTheme;
 }
 
-const Header: React.FC<HeaderProps> = ({ scrolled }) => {
+const Header: React.FC<HeaderProps> = ({ scrolled, storyTheme }) => {
   const [isMenuOpen, setIsMenuOpen] = useState(false);
   
   // Close menu when resizing to desktop
@@ -37,47 +40,53 @@ const Header: React.FC<HeaderProps> = ({ scrolled }) => {
 
   const toggleMenu = () => setIsMenuOpen(prev => !prev);
   
-  const navLinks = [
-    { name: 'AI Jumpstart', href: '#services' },
-    { name: 'About', href: '#about' },
-    { name: 'Work', href: '#work' },
-    { name: 'Clients', href: '#clients' },
-    { name: 'Contact', href: '#contact' },
-  ];
+  const isLightHeader = storyTheme === 'dark';
+  const logoVariant = isLightHeader && !isMenuOpen ? 'light' : 'dark';
+  const contactLabel = scrolled ? 'Start AI Jumpstart' : 'Bring me a bottleneck';
 
   return (
     <header 
-      className={`fixed top-0 left-0 right-0 z-50 transition-all duration-300 ${
-        scrolled 
-          ? 'bg-white shadow-md py-3' 
-          : 'bg-transparent py-6'
-      }`}
+      className={cn(
+        'fixed left-0 right-0 top-0 z-50 transition-all duration-300',
+        scrolled ? 'py-3' : 'py-6',
+        scrolled && storyTheme === 'light' && 'bg-white shadow-sm',
+        scrolled && storyTheme !== 'light' && 'bg-primary/92 shadow-sm',
+        !scrolled && 'bg-transparent'
+      )}
     >
       <div className="container flex items-center justify-between">
-        <Logo />
+        <a
+          href="#top"
+          aria-label="Arturo Solo LLC home"
+          className={cn(
+            'rounded-full px-3 py-2 transition-colors focus:outline-none focus-visible:ring-2 focus-visible:ring-accent focus-visible:ring-offset-2',
+            storyTheme === 'dark' && !isMenuOpen ? 'bg-transparent' : 'bg-white/95 shadow-sm backdrop-blur-sm'
+          )}
+        >
+          <Logo variant={logoVariant} />
+        </a>
         
         {/* Desktop Menu */}
-        <nav className="hidden md:flex items-center space-x-8">
-          {navLinks.map((link) => (
-            <a
-              key={link.name}
-              href={link.href}
-              className="text-gray-800 hover:text-primary-600 font-medium transition-colors"
-            >
-              {link.name}
-            </a>
-          ))}
+        <nav className="hidden md:flex items-center space-x-4" aria-label="Primary navigation">
           <a
             href="#contact"
-            className="btn btn-primary"
+            className={cn(
+              'rounded-full px-5 py-2 text-sm font-bold transition-colors focus:outline-none focus-visible:ring-2 focus-visible:ring-offset-2',
+              isLightHeader
+                ? 'bg-white text-primary hover:bg-white/90 focus-visible:ring-white focus-visible:ring-offset-primary'
+                : 'bg-primary text-white hover:bg-primary/90 focus-visible:ring-primary focus-visible:ring-offset-white'
+            )}
           >
-            Start your AI Jumpstart
+            {contactLabel}
           </a>
         </nav>
         
         {/* Mobile Menu Button */}
         <button 
-          className="md:hidden text-gray-800 focus:outline-none"
+          className={cn(
+            'rounded-sm md:hidden focus:outline-none focus-visible:ring-2 focus-visible:ring-accent focus-visible:ring-offset-2',
+            isLightHeader && !isMenuOpen ? 'text-white' : 'text-primary'
+          )}
           onClick={toggleMenu}
           aria-label={isMenuOpen ? "Close menu" : "Open menu"}
         >
@@ -95,20 +104,11 @@ const Header: React.FC<HeaderProps> = ({ scrolled }) => {
             transition={{ duration: 0.2 }}
             className="md:hidden absolute top-full left-0 right-0 bg-white shadow-lg"
           >
-            <div className="container py-6 flex flex-col space-y-6">
-              {navLinks.map((link) => (
-                <a
-                  key={link.name}
-                  href={link.href}
-                  className="text-lg text-gray-800 font-medium hover:text-primary-600"
-                  onClick={() => setIsMenuOpen(false)}
-                >
-                  {link.name}
-                </a>
-              ))}
+            <div className="container py-6 flex flex-col space-y-4">
+              <p className="text-sm uppercase tracking-[0.24em] text-primary/60">Ready when the bottleneck is</p>
               <a
                 href="#contact"
-                className="btn btn-primary text-center"
+                className="rounded-full bg-primary px-5 py-3 text-center font-bold text-white transition-colors hover:bg-primary/90 focus:outline-none focus-visible:ring-2 focus-visible:ring-primary focus-visible:ring-offset-2"
                 onClick={() => setIsMenuOpen(false)}
               >
                 Start your AI Jumpstart

@@ -9,26 +9,23 @@ const Footer: React.FC = () => {
     {
       title: 'Company',
       links: [
-        { name: 'About Arturo', href: '#about' },
-        { name: 'Work', href: '#work' },
         { name: 'Contact', href: '#contact' },
+        { name: 'Email Arturo', href: 'mailto:start@arturosolo.com' },
       ]
     },
     {
       title: 'What I Do',
       links: [
-        { name: 'AI Jumpstart', href: '#services' },
-        { name: 'Custom AI Builds', href: '#services' },
-        { name: 'How It Works', href: '#services' },
+        { name: 'AI Jumpstart', href: '#contact' },
+        { name: 'Custom AI Builds', href: '#contact' },
+        { name: 'Workflow Automation', href: '#contact' },
       ]
     },
     {
-      title: 'Resources',
+      title: 'Start Here',
       links: [
-        { name: 'Blog', href: '#blog' },
-        { name: 'Work', href: '#work' },
-        /* { name: 'Guides', href: '#guides' }, */
-        { name: 'FAQs', href: '#faqs' },
+        { name: 'Bring a bottleneck', href: '#contact' },
+        { name: 'Ask what to build first', href: '#contact' },
       ]
     },
   ];
@@ -47,7 +44,7 @@ const Footer: React.FC = () => {
           <div className="lg:col-span-2">
             <Logo variant="light" />
             <p className="mt-4 text-gray-400 max-w-md">
-              I help small businesses put AI to work — building and shipping real, running AI workflows, not slide decks. Start with an AI Jumpstart.
+              I help small businesses put working AI into real operations — small enough to ship, useful enough to matter. Start with an AI Jumpstart.
             </p>
             <div className="flex space-x-4 mt-6">
               {socialLinks.map((link) => (
