@@ -22,7 +22,7 @@ Use this as the running checklist for what the human should understand about thi
 - [ ] How the new page positions Arturo Solo LLC as an AI build studio, not a generic consultancy.
 - [ ] How AI Jumpstart becomes the concrete commercial entry point.
 - [ ] What this impacts: route composition, header/footer anchors, scroll behavior, and contact conversion.
-- [ ] What remains deferred: named in-development products, case-study system, automated browser tests.
+- [ ] What remains deferred: named in-development products, case-study system (Vitest + Playwright + CI added Jun 2026).
 - [ ] How the durable solution doc in `docs/solutions/design-patterns/story-scroll-founder-builder-homepage.md` captures the reusable pattern for future agents and redesign work.
 
 ---
@@ -67,7 +67,7 @@ Use this as the running checklist for what the human should understand about thi
 - [x] **Why it fails silently:** Tailwind generates, it doesn't validate. Unknown classes are indistinguishable from intentional non-Tailwind class strings.
 - [x] **Cheapest signals to catch it:** Tailwind IntelliSense (red underline on unknown utilities) + visual browser testing. `eslint-plugin-tailwindcss` for CI.
 - [x] **Replacement mapping:** since `primary` has only `DEFAULT`, shade utilities map to the base token + opacity. `primary-500` → `primary`; `primary-600` → `primary/90`; lighter footer hover → `text-white` (since footer bg is dark, "lighter" = higher luminance, not a shade ramp).
-- [x] **Live-component scope:** Contact, BackToTop, Footer, Header, Success all clean. Hero/About/Services/CaseStudies/Clients still contain bad classes but are dead code per the redesign (not rendered from `App.tsx` or `main.tsx`); flagged for the later cleanup track.
+- [x] **Live-component scope:** Contact, BackToTop, Footer, Header, Success all clean. Legacy Hero/About/Services/CaseStudies/Clients sections removed from the repo (were not rendered from `App.tsx`).
 
 ### S5 — Global `window` event for theme propagation (Should-fix) ✅ FIXED
 

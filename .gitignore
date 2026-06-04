@@ -26,4 +26,9 @@ dist-ssr
 
 # Local Netlify folder
 .netlify
+
+# Playwright
+test-results/
+playwright-report/
+blob-report/
 .compound-engineering/*.local.yaml

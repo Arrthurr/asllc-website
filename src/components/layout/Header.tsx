@@ -67,7 +67,7 @@ const Header: React.FC<HeaderProps> = ({ scrolled, storyTheme }) => {
         </a>
         
         {/* Desktop Menu */}
-        <nav className="hidden md:flex items-center space-x-4" aria-label="Primary navigation">
+        <nav className="hidden items-center space-x-4 md:flex" aria-label="Primary navigation">
           <a
             href="#contact"
             className={cn(
@@ -104,9 +104,9 @@ const Header: React.FC<HeaderProps> = ({ scrolled, storyTheme }) => {
             animate={{ opacity: 1, y: 0 }}
             exit={{ opacity: 0, y: -20 }}
             transition={{ duration: 0.2 }}
-            className="md:hidden absolute top-full left-0 right-0 bg-white shadow-lg"
+            className="absolute left-0 right-0 top-full bg-white shadow-lg md:hidden"
           >
-            <div className="container py-6 flex flex-col space-y-4">
+            <div className="container flex flex-col space-y-4 py-6">
               <p className="text-sm uppercase tracking-[0.24em] text-primary/60">Ready when the bottleneck is</p>
               <a
                 href="#contact"

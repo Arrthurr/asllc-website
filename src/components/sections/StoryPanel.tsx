@@ -151,7 +151,7 @@ const StoryPanel: React.FC<StoryPanelProps> = ({
                 )}
               >
                 {cta.label}
-                <ArrowUpRight className="ml-2 h-5 w-5 transition-transform group-hover:translate-x-0.5 group-hover:-translate-y-0.5" />
+                <ArrowUpRight className="ml-2 h-5 w-5 transition-transform group-hover:-translate-y-0.5 group-hover:translate-x-0.5" />
               </a>
             )}
           </aside>

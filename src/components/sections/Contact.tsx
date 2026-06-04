@@ -28,13 +28,13 @@ const Contact: React.FC = () => {
   
   const contactInfo = [
     { 
-      icon: <Mail className="w-6 h-6 text-accent" />, 
+      icon: <Mail className="h-6 w-6 text-accent" />, 
       label: 'Email', 
       value: 'start@arturosolo.com',
       link: 'mailto:start@arturosolo.com'
     },
     { 
-      icon: <MapPin className="w-6 h-6 text-accent" />, 
+      icon: <MapPin className="h-6 w-6 text-accent" />, 
       label: 'Based in', 
       value: 'Phoenix, AZ',
       link: '#'
@@ -43,27 +43,27 @@ const Contact: React.FC = () => {
 
   return (
     <Section id="contact" background="secondary" className="scroll-mt-20">
-      <div className="grid grid-cols-1 lg:grid-cols-2 gap-16">
+      <div className="grid grid-cols-1 gap-16 lg:grid-cols-2">
         <motion.div
           initial={{ opacity: 0, y: 30 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ duration: 0.6 }}
         >
-          <h2 className="text-3xl md:text-5xl font-bold mb-6">Tell me where the work gets stuck.</h2>
-          <p className="text-xl text-gray-600 mb-8">
+          <h2 className="mb-6 text-3xl font-bold md:text-5xl">Tell me where the work gets stuck.</h2>
+          <p className="mb-8 text-xl text-gray-600">
             You do not need a polished AI idea. Send the annoying process, the repeated handoff, the report nobody wants to clean, or the follow-up that keeps slipping. I'll reply personally and help find the right first build — usually an AI Jumpstart.
           </p>
           
-          <div className="space-y-6 mb-10">
+          <div className="mb-10 space-y-6">
             {contactInfo.map((item, index) => (
               item && (
                 <div key={index} className="flex items-start">
-                  <div className="p-3 bg-white rounded-full shadow-md mr-4">
+                  <div className="mr-4 rounded-full bg-white p-3 shadow-md">
                     {item.icon}
                   </div>
                   <div>
-                    <h3 className="font-semibold text-lg">{item.label}</h3>
-                    <a href={item.link} className="text-gray-600 hover:text-primary transition-colors">
+                    <h3 className="text-lg font-semibold">{item.label}</h3>
+                    <a href={item.link} className="text-gray-600 transition-colors hover:text-primary">
                       {item.value}
                     </a>
                   </div>
@@ -72,8 +72,8 @@ const Contact: React.FC = () => {
             ))}
           </div>
           
-          <div className="bg-white rounded-lg shadow-md p-6">
-            <h3 className="font-bold text-lg mb-4">A good first message is simple</h3>
+          <div className="rounded-lg bg-white p-6 shadow-md">
+            <h3 className="mb-4 text-lg font-bold">A good first message is simple</h3>
             <div className="space-y-3 text-gray-600">
               <p className="mb-0">“We spend three hours every Friday reconciling this spreadsheet.”</p>
               <p className="mb-0">“Leads get lost between the form and follow-up.”</p>
@@ -87,8 +87,8 @@ const Contact: React.FC = () => {
           animate={{ opacity: 1, y: 0 }}
           transition={{ duration: 0.6, delay: 0.2 }}
         >
-          <div className="bg-white rounded-lg shadow-xl p-8">
-            <h3 className="text-2xl font-bold mb-6">Start with the bottleneck</h3>
+          <div className="rounded-lg bg-white p-8 shadow-xl">
+            <h3 className="mb-6 text-2xl font-bold">Start with the bottleneck</h3>
             
             <form
               name="contact"
@@ -104,9 +104,9 @@ const Contact: React.FC = () => {
                 <p className="hidden">
                   <label>Don't fill this out: <input name="bot-field" /></label>
                 </p>
-                <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+                <div className="grid grid-cols-1 gap-6 md:grid-cols-2">
                   <div>
-                    <label htmlFor="name" className="block text-sm font-medium text-gray-700 mb-1">
+                    <label htmlFor="name" className="mb-1 block text-sm font-medium text-gray-700">
                       Full Name*
                     </label>
                     <input
@@ -115,13 +115,13 @@ const Contact: React.FC = () => {
                       name="name"
                       value={formState.name}
                       onChange={handleChange}
-                      className="w-full px-4 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-primary"
+                      className="w-full rounded-md border border-gray-300 px-4 py-2 focus:outline-none focus:ring-2 focus:ring-primary"
                       required
                       minLength={2}
                     />
                   </div>
                   <div>
-                    <label htmlFor="email" className="block text-sm font-medium text-gray-700 mb-1">
+                    <label htmlFor="email" className="mb-1 block text-sm font-medium text-gray-700">
                       Email Address*
                     </label>
                     <input
@@ -130,15 +130,15 @@ const Contact: React.FC = () => {
                       name="email"
                       value={formState.email}
                       onChange={handleChange}
-                      className="w-full px-4 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-primary"
+                      className="w-full rounded-md border border-gray-300 px-4 py-2 focus:outline-none focus:ring-2 focus:ring-primary"
                       required
                     />
                   </div>
                 </div>
                 
-                <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+                <div className="grid grid-cols-1 gap-6 md:grid-cols-2">
                   <div>
-                    <label htmlFor="company" className="block text-sm font-medium text-gray-700 mb-1">
+                    <label htmlFor="company" className="mb-1 block text-sm font-medium text-gray-700">
                       Company Name*
                     </label>
                     <input
@@ -147,12 +147,12 @@ const Contact: React.FC = () => {
                       name="company"
                       value={formState.company}
                       onChange={handleChange}
-                      className="w-full px-4 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-primary"
+                      className="w-full rounded-md border border-gray-300 px-4 py-2 focus:outline-none focus:ring-2 focus:ring-primary"
                       required
                     />
                   </div>
                   <div>
-                    <label htmlFor="service" className="block text-sm font-medium text-gray-700 mb-1">
+                    <label htmlFor="service" className="mb-1 block text-sm font-medium text-gray-700">
                       What are you interested in?
                     </label>
                     <select
@@ -160,7 +160,7 @@ const Contact: React.FC = () => {
                       name="service"
                       value={formState.service}
                       onChange={handleChange}
-                      className="w-full px-4 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-primary"
+                      className="w-full rounded-md border border-gray-300 px-4 py-2 focus:outline-none focus:ring-2 focus:ring-primary"
                     >
                       <option value="">What are you interested in?</option>
                       <option value="ai-jumpstart">AI Jumpstart</option>
@@ -171,7 +171,7 @@ const Contact: React.FC = () => {
                 </div>
                 
                 <div>
-                  <label htmlFor="message" className="block text-sm font-medium text-gray-700 mb-1">
+                  <label htmlFor="message" className="mb-1 block text-sm font-medium text-gray-700">
                     What's the work you want off your plate?
                   </label>
                   <textarea
@@ -180,7 +180,7 @@ const Contact: React.FC = () => {
                     value={formState.message}
                     onChange={handleChange}
                     rows={4}
-                    className="w-full px-4 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-primary"
+                    className="w-full rounded-md border border-gray-300 px-4 py-2 focus:outline-none focus:ring-2 focus:ring-primary"
                   ></textarea>
                 </div>
                 
