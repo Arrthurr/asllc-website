@@ -13,7 +13,7 @@ const Logo: React.FC<LogoProps> = ({ variant = 'dark', className }) => {
     <div className={cn("flex items-center", className)}>
       <div className={cn("font-normal text-xl tracking-tighter", textColor)}>
         <span>Arturo Solo</span>
-        <span className="text-accent ml-1">LLC</span>
+        <span className="ml-1 text-accent">LLC</span>
       </div>
     </div>
   );

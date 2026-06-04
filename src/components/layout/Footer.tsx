@@ -40,18 +40,18 @@ const Footer: React.FC = () => {
   return (
     <footer className="bg-gray-900 text-white">
       <div className="container py-12 md:py-16">
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-5 gap-8">
+        <div className="grid grid-cols-1 gap-8 md:grid-cols-2 lg:grid-cols-5">
           <div className="lg:col-span-2">
             <Logo variant="light" />
-            <p className="mt-4 text-gray-400 max-w-md">
+            <p className="mt-4 max-w-md text-gray-400">
               I help small businesses put working AI into real operations — small enough to ship, useful enough to matter. Start with an AI Jumpstart.
             </p>
-            <div className="flex space-x-4 mt-6">
+            <div className="mt-6 flex space-x-4">
               {socialLinks.map((link) => (
                 <a 
                   key={link.name}
                   href={link.href}
-                  className="text-gray-400 hover:text-white transition-colors"
+                  className="text-gray-400 transition-colors hover:text-white"
                   aria-label={link.name}
                 >
                   {link.icon}
@@ -62,13 +62,13 @@ const Footer: React.FC = () => {
           
           {footerLinks.map((group) => (
             <div key={group.title}>
-              <h4 className="font-bold text-lg mb-4">{group.title}</h4>
+              <h4 className="mb-4 text-lg font-bold">{group.title}</h4>
               <ul className="space-y-2">
                 {group.links.map((link) => (
                   <li key={link.name}>
                     <a 
                       href={link.href}
-                      className="text-gray-400 hover:text-white transition-colors"
+                      className="text-gray-400 transition-colors hover:text-white"
                     >
                       {link.name}
                     </a>
@@ -79,11 +79,11 @@ const Footer: React.FC = () => {
           ))}
         </div>
         
-        <div className="border-t border-gray-800 mt-12 pt-8 flex flex-col md:flex-row md:items-center justify-between">
+        <div className="mt-12 flex flex-col justify-between border-t border-gray-800 pt-8 md:flex-row md:items-center">
           <p className="text-gray-500">
             &copy; {currentYear} Arturo Solo LLC. All rights reserved.
           </p>
-          <div className="mt-4 md:mt-0 flex space-x-6">
+          <div className="mt-4 flex space-x-6 md:mt-0">
             <a href="#privacy" className="text-gray-500 hover:text-gray-300">Privacy Policy</a>
             <a href="#terms" className="text-gray-500 hover:text-gray-300">Terms of Service</a>
           </div>

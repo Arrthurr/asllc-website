@@ -18,7 +18,7 @@ const Card: React.FC<CardProps> = ({
       whileHover={hover ? { y: -5 } : {}}
       transition={{ duration: 0.2 }}
       className={clsx(
-        'bg-white rounded-lg shadow-md overflow-hidden',
+        'overflow-hidden rounded-lg bg-white shadow-md',
         hover && 'transition-all duration-300 hover:shadow-lg',
         className
       )}
