@@ -8,8 +8,6 @@ import { useEffect, useRef, useState } from 'react';
  */
 export const EXIT_TRANSITION_FALLBACK_MS = 500;
 
-export type ExitTransitionStatus = 'entering' | 'entered' | 'exiting';
-
 export interface UseExitTransitionOptions {
   /**
    * Which `transitionend` property gates the unmount. Defaults to `opacity`,
@@ -22,8 +20,8 @@ export interface UseExitTransitionOptions {
 export interface ExitTransitionResult<T extends HTMLElement> {
   /** Whether the element should be in the DOM (true through the exit animation). */
   shouldRender: boolean;
-  /** Drives the consumer's class composition: `entered` = visible, else = "out". */
-  status: ExitTransitionStatus;
+  /** True at the visible resting state; false drives the "out" (enter/exit) classes. */
+  isEntered: boolean;
   /** Attach to the transitioning element so its `transitionend` can be filtered. */
   ref: React.RefObject<T>;
 }
@@ -54,9 +52,7 @@ export function useExitTransition<T extends HTMLElement = HTMLElement>(
 ): ExitTransitionResult<T> {
   const ref = useRef<T>(null);
   const [shouldRender, setShouldRender] = useState(show);
-  const [status, setStatus] = useState<ExitTransitionStatus>(
-    show ? 'entered' : 'exiting'
-  );
+  const [isEntered, setIsEntered] = useState(show);
   const fallbackTimer = useRef<ReturnType<typeof setTimeout>>();
   const isInitialRun = useRef(true);
 
@@ -79,21 +75,21 @@ export function useExitTransition<T extends HTMLElement = HTMLElement>(
       // An element shown on first render rests at its visible state — no enter
       // animation replays on mount.
       if (wasInitialRun) {
-        setStatus('entered');
+        setIsEntered(true);
         return;
       }
 
       // Render the "out" state first, then flip to "entered" next frame so the
       // browser registers a start state and animates the transition.
-      setStatus('entering');
-      const raf = requestAnimationFrame(() => setStatus('entered'));
+      setIsEntered(false);
+      const raf = requestAnimationFrame(() => setIsEntered(true));
       return () => cancelAnimationFrame(raf);
     }
 
     // Exit: nothing mounted means nothing to animate out.
     if (!shouldRender) return;
 
-    setStatus('exiting');
+    setIsEntered(false);
 
     const unmount = () => {
       clearFallback();
@@ -126,5 +122,5 @@ export function useExitTransition<T extends HTMLElement = HTMLElement>(
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [show]);
 
-  return { shouldRender, status, ref };
+  return { shouldRender, isEntered, ref };
 }

@@ -1,5 +1,5 @@
 import React from 'react';
-import { clsx } from 'clsx';
+import { cn } from '@/lib/utils';
 
 interface CardProps {
   className?: string;
@@ -14,7 +14,7 @@ const Card: React.FC<CardProps> = ({
 }) => {
   return (
     <div
-      className={clsx(
+      className={cn(
         'overflow-hidden rounded-lg bg-white shadow-md',
         // Was a Framer whileHover y:-5 (duration 0.2) plus a CSS shadow
         // transition; both are now CSS. -translate-y-[5px] matches 5px exactly
@@ -36,7 +36,7 @@ interface CardContentProps {
 
 const CardContent: React.FC<CardContentProps> = ({ className, children }) => {
   return (
-    <div className={clsx('p-6', className)}>
+    <div className={cn('p-6', className)}>
       {children}
     </div>
   );

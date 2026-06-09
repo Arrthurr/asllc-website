@@ -11,14 +11,15 @@ interface HarnessProps {
 }
 
 function Harness({ show, propertyName }: HarnessProps) {
-  const { shouldRender, status, ref } = useExitTransition<HTMLDivElement>(show, {
-    propertyName,
-  });
+  const { shouldRender, isEntered, ref } = useExitTransition<HTMLDivElement>(
+    show,
+    { propertyName }
+  );
 
   if (!shouldRender) return null;
 
   return (
-    <div ref={ref} data-testid="el" data-status={status}>
+    <div ref={ref} data-testid="el" data-entered={isEntered}>
       <span data-testid="child">child</span>
     </div>
   );
@@ -39,7 +40,7 @@ describe('useExitTransition', () => {
 
     const el = screen.getByTestId('el');
     expect(el).toBeInTheDocument();
-    expect(el).toHaveAttribute('data-status', 'entered');
+    expect(el).toHaveAttribute('data-entered', 'true');
   });
 
   it('does not render when hidden on first render', () => {
@@ -55,9 +56,9 @@ describe('useExitTransition', () => {
       rerender(<Harness show={false} />);
     });
 
-    // Still mounted while exiting.
+    // Still mounted while exiting, now at the "out" state.
     expect(screen.getByTestId('el')).toBeInTheDocument();
-    expect(screen.getByTestId('el')).toHaveAttribute('data-status', 'exiting');
+    expect(screen.getByTestId('el')).toHaveAttribute('data-entered', 'false');
 
     act(() => {
       fireEvent.transitionEnd(el, { propertyName: 'opacity' });

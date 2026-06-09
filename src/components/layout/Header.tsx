@@ -106,7 +106,7 @@ const Header: React.FC<HeaderProps> = ({ scrolled, storyTheme }) => {
           className={cn(
             'absolute left-0 right-0 top-full bg-white shadow-lg md:hidden',
             'transition-[opacity,transform] duration-200 ease-out',
-            menuTransition.status === 'entered'
+            menuTransition.isEntered
               ? 'translate-y-0 opacity-100'
               : '-translate-y-5 opacity-0'
           )}

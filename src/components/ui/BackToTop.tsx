@@ -39,7 +39,7 @@ const BackToTop: React.FC = () => {
       className={cn(
         'fixed bottom-8 right-8 z-50 rounded-full bg-primary p-3 text-white shadow-lg hover:bg-primary/90 focus:outline-none focus:ring-2 focus:ring-primary focus:ring-offset-2',
         'transition-[opacity,transform,background-color] duration-200 ease-out',
-        button.status === 'entered' ? 'scale-100 opacity-100' : 'scale-50 opacity-0'
+        button.isEntered ? 'scale-100 opacity-100' : 'scale-50 opacity-0'
       )}
       aria-label="Back to top"
     >
