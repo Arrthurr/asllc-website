@@ -1,8 +1,8 @@
 import React, { useState, useEffect } from 'react';
 import { Menu, X } from 'lucide-react';
-import { motion, AnimatePresence } from 'framer-motion';
 import Logo from '../ui/Logo';
 import { cn } from '@/lib/utils';
+import { useExitTransition } from '@/hooks/useExitTransition';
 import type { StoryTheme } from '../ui/story-scroll';
 
 interface HeaderProps {
@@ -12,7 +12,8 @@ interface HeaderProps {
 
 const Header: React.FC<HeaderProps> = ({ scrolled, storyTheme }) => {
   const [isMenuOpen, setIsMenuOpen] = useState(false);
-  
+  const menuTransition = useExitTransition<HTMLDivElement>(isMenuOpen);
+
   // Close menu when resizing to desktop
   useEffect(() => {
     const handleResize = () => {
@@ -96,29 +97,32 @@ const Header: React.FC<HeaderProps> = ({ scrolled, storyTheme }) => {
         </button>
       </div>
       
-      {/* Mobile Menu */}
-      <AnimatePresence>
-        {isMenuOpen && (
-          <motion.div
-            initial={{ opacity: 0, y: -20 }}
-            animate={{ opacity: 1, y: 0 }}
-            exit={{ opacity: 0, y: -20 }}
-            transition={{ duration: 0.2 }}
-            className="absolute left-0 right-0 top-full bg-white shadow-lg md:hidden"
-          >
-            <div className="container flex flex-col space-y-4 py-6">
-              <p className="text-sm uppercase tracking-[0.24em] text-primary/60">Ready when the bottleneck is</p>
-              <a
-                href="#contact"
-                className="rounded-full bg-primary px-5 py-3 text-center font-bold text-white transition-colors hover:bg-primary/90 focus:outline-none focus-visible:ring-2 focus-visible:ring-primary focus-visible:ring-offset-2"
-                onClick={() => setIsMenuOpen(false)}
-              >
-                Start your AI Jumpstart
-              </a>
-            </div>
-          </motion.div>
-        )}
-      </AnimatePresence>
+      {/* Mobile Menu — kept mounted through its exit transition by the hook.
+          Carries forward Framer's {opacity:0, y:-20} ⇄ {opacity:1, y:0}, 0.2s. */}
+      {menuTransition.shouldRender && (
+        <div
+          ref={menuTransition.ref}
+          data-testid="mobile-menu"
+          className={cn(
+            'absolute left-0 right-0 top-full bg-white shadow-lg md:hidden',
+            'transition-[opacity,transform] duration-200 ease-out',
+            menuTransition.status === 'entered'
+              ? 'translate-y-0 opacity-100'
+              : '-translate-y-5 opacity-0'
+          )}
+        >
+          <div className="container flex flex-col space-y-4 py-6">
+            <p className="text-sm uppercase tracking-[0.24em] text-primary/60">Ready when the bottleneck is</p>
+            <a
+              href="#contact"
+              className="rounded-full bg-primary px-5 py-3 text-center font-bold text-white transition-colors hover:bg-primary/90 focus:outline-none focus-visible:ring-2 focus-visible:ring-primary focus-visible:ring-offset-2"
+              onClick={() => setIsMenuOpen(false)}
+            >
+              Start your AI Jumpstart
+            </a>
+          </div>
+        </div>
+      )}
     </header>
   );
 };
