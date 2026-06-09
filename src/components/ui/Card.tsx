@@ -1,6 +1,5 @@
 import React from 'react';
 import { clsx } from 'clsx';
-import { motion } from 'framer-motion';
 
 interface CardProps {
   className?: string;
@@ -14,17 +13,19 @@ const Card: React.FC<CardProps> = ({
   hover = true,
 }) => {
   return (
-    <motion.div
-      whileHover={hover ? { y: -5 } : {}}
-      transition={{ duration: 0.2 }}
+    <div
       className={clsx(
         'overflow-hidden rounded-lg bg-white shadow-md',
-        hover && 'transition-all duration-300 hover:shadow-lg',
+        // Was a Framer whileHover y:-5 (duration 0.2) plus a CSS shadow
+        // transition; both are now CSS. -translate-y-[5px] matches 5px exactly
+        // (-translate-y-1 would be 4px).
+        hover &&
+          'transition-[box-shadow,transform] duration-200 ease-out hover:translate-y-[-5px] hover:shadow-lg',
         className
       )}
     >
       {children}
-    </motion.div>
+    </div>
   );
 };
 
