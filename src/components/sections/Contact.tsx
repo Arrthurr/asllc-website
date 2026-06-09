@@ -43,7 +43,7 @@ const Contact: React.FC = () => {
   return (
     <Section id="contact" background="secondary" className="scroll-mt-20">
       <div className="grid grid-cols-1 gap-16 lg:grid-cols-2">
-        <div className="ease-out animate-in fade-in slide-in-from-bottom-5 [animation-duration:600ms]">
+        <div className="ease-out animate-in fade-in slide-in-from-bottom-[30px] [animation-duration:600ms]">
           <h2 className="mb-6 text-3xl font-bold md:text-5xl">Tell me where the work gets stuck.</h2>
           <p className="mb-8 text-xl text-gray-600">
             You do not need a polished AI idea. Send the annoying process, the repeated handoff, the report nobody wants to clean, or the follow-up that keeps slipping. I'll reply personally and help find the right first build — usually an AI Jumpstart.
@@ -80,7 +80,7 @@ const Contact: React.FC = () => {
         {/* animation-delay preserves the original ~0.2s stagger behind the first
             column; fill-mode-both holds the hidden start state through the delay
             (matching Framer's initial opacity:0) instead of flashing visible. */}
-        <div className="ease-out animate-in fade-in slide-in-from-bottom-5 fill-mode-both [animation-delay:200ms] [animation-duration:600ms]">
+        <div className="ease-out animate-in fade-in slide-in-from-bottom-[30px] fill-mode-both [animation-delay:200ms] [animation-duration:600ms]">
           <div className="rounded-lg bg-white p-8 shadow-xl">
             <h3 className="mb-6 text-2xl font-bold">Start with the bottleneck</h3>
             

@@ -79,11 +79,19 @@ export function useExitTransition<T extends HTMLElement = HTMLElement>(
         return;
       }
 
-      // Render the "out" state first, then flip to "entered" next frame so the
-      // browser registers a start state and animates the transition.
+      // Render the "out" state first, then flip to "entered" so the browser
+      // registers a start state and animates the transition. A double rAF is
+      // deliberate: a single frame can coalesce the mount commit and the
+      // entered commit into one paint, skipping the enter transition entirely.
       setIsEntered(false);
-      const raf = requestAnimationFrame(() => setIsEntered(true));
-      return () => cancelAnimationFrame(raf);
+      let inner = 0;
+      const outer = requestAnimationFrame(() => {
+        inner = requestAnimationFrame(() => setIsEntered(true));
+      });
+      return () => {
+        cancelAnimationFrame(outer);
+        cancelAnimationFrame(inner);
+      };
     }
 
     // Exit: nothing mounted means nothing to animate out.

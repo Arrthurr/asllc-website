@@ -7,7 +7,7 @@ const Success: React.FC = () => {
   return (
     <Section background="secondary">
       <div className="mx-auto max-w-2xl text-center">
-        <div className="rounded-lg bg-white p-8 shadow-xl ease-out animate-in fade-in slide-in-from-bottom-5 [animation-duration:600ms]">
+        <div className="rounded-lg bg-white p-8 shadow-xl ease-out animate-in fade-in slide-in-from-bottom-[30px] [animation-duration:600ms]">
           <div className="flex flex-col items-center justify-center py-8">
             <div className="mb-4 text-primary">
               <CheckCircle className="h-16 w-16" />
