@@ -6,6 +6,8 @@ import { cn } from '@/lib/utils';
 
 export type StoryTheme = 'light' | 'dark' | 'accent';
 
+type StackReason = 'mobile' | 'reduced-motion' | 'overflow' | 'single-panel';
+
 interface StoryScrollProps {
   children: React.ReactNode;
   className?: string;
@@ -33,6 +35,16 @@ const useMediaQuery = (query: string) => {
   return matches;
 };
 
+const panelContentExceedsViewport = (panel: HTMLDivElement | undefined) => {
+  if (!panel) return false;
+  const section = panel.querySelector('section');
+  if (!section) return false;
+  return section.scrollHeight > document.documentElement.clientHeight;
+};
+
+const anyPanelExceedsViewport = (panels: HTMLDivElement[]) =>
+  panels.some(panelContentExceedsViewport);
+
 const StoryScroll: React.FC<StoryScrollProps> = ({
   children,
   className,
@@ -42,7 +54,18 @@ const StoryScroll: React.FC<StoryScrollProps> = ({
   const prefersReducedMotion = useMediaQuery('(prefers-reduced-motion: reduce)');
   const isMobile = useMediaQuery('(max-width: 767px)');
   const panels = useMemo(() => React.Children.toArray(children), [children]);
-  const shouldStack = prefersReducedMotion || isMobile || panels.length <= 1;
+  const forceStack = prefersReducedMotion || isMobile || panels.length <= 1;
+  const [contentExceedsViewport, setContentExceedsViewport] = useState(false);
+  const [measurementComplete, setMeasurementComplete] = useState(false);
+  const useStackedLayout =
+    forceStack || contentExceedsViewport || (!forceStack && !measurementComplete);
+  const stackReason = useMemo((): StackReason | undefined => {
+    if (prefersReducedMotion) return 'reduced-motion';
+    if (isMobile) return 'mobile';
+    if (panels.length <= 1) return 'single-panel';
+    if (contentExceedsViewport) return 'overflow';
+    return undefined;
+  }, [prefersReducedMotion, isMobile, panels.length, contentExceedsViewport]);
   const [activeIndex, setActiveIndex] = useState(0);
   const activeIndexRef = useRef(-1);
 
@@ -67,7 +90,71 @@ const StoryScroll: React.FC<StoryScrollProps> = ({
   }, [panels.length, setActiveTheme]);
 
   useEffect(() => {
-    if (!shouldStack || !containerRef.current) return;
+    if (!useStackedLayout) return;
+
+    activeIndexRef.current = -1;
+    setActiveTheme(0);
+  }, [useStackedLayout, setActiveTheme]);
+
+  useEffect(() => {
+    if (forceStack) {
+      setMeasurementComplete(true);
+      return;
+    }
+
+    let rafId = 0;
+    let debounceTimer: ReturnType<typeof setTimeout>;
+
+    const measure = () => {
+      const exceeds = anyPanelExceedsViewport(panelRefs.current);
+      if (exceeds) {
+        setContentExceedsViewport(true);
+      }
+      setMeasurementComplete(true);
+    };
+
+    rafId = requestAnimationFrame(() => {
+      requestAnimationFrame(measure);
+    });
+
+    const handleResize = () => {
+      clearTimeout(debounceTimer);
+      debounceTimer = setTimeout(() => {
+        if (anyPanelExceedsViewport(panelRefs.current)) {
+          setContentExceedsViewport(true);
+        }
+      }, 250);
+    };
+
+    window.addEventListener('resize', handleResize);
+
+    return () => {
+      cancelAnimationFrame(rafId);
+      clearTimeout(debounceTimer);
+      window.removeEventListener('resize', handleResize);
+    };
+  }, [forceStack, panels.length]);
+
+  useEffect(() => {
+    if (useStackedLayout || !measurementComplete || forceStack) return;
+
+    const sections = panelRefs.current
+      .map((panel) => panel?.querySelector('section'))
+      .filter((section): section is HTMLElement => section instanceof HTMLElement);
+
+    const observer = new ResizeObserver(() => {
+      if (anyPanelExceedsViewport(panelRefs.current)) {
+        setContentExceedsViewport(true);
+      }
+    });
+
+    sections.forEach((section) => observer.observe(section));
+
+    return () => observer.disconnect();
+  }, [useStackedLayout, measurementComplete, forceStack, panels.length]);
+
+  useEffect(() => {
+    if (!useStackedLayout || !containerRef.current) return;
 
     const observer = new IntersectionObserver(
       (entries) => {
@@ -86,11 +173,18 @@ const StoryScroll: React.FC<StoryScrollProps> = ({
     panelRefs.current.forEach((panel) => observer.observe(panel));
 
     return () => observer.disconnect();
-  }, [shouldStack, panels.length, setActiveTheme]);
+  }, [useStackedLayout, panels.length, setActiveTheme]);
 
   useGSAP(
     () => {
-      if (shouldStack || !containerRef.current || panels.length <= 1) return;
+      if (
+        useStackedLayout ||
+        !measurementComplete ||
+        !containerRef.current ||
+        panels.length <= 1
+      ) {
+        return;
+      }
 
       gsap.registerPlugin(ScrollTrigger);
       ScrollTrigger.normalizeScroll(true);
@@ -158,27 +252,35 @@ const StoryScroll: React.FC<StoryScrollProps> = ({
       return () => {
         timeline.scrollTrigger?.kill();
         timeline.kill();
+        ScrollTrigger.normalizeScroll(false);
         gsap.set(panelElements, { clearProps: 'all' });
       };
     },
-    { scope: containerRef, dependencies: [shouldStack, panels.length], revertOnUpdate: true }
+    {
+      scope: containerRef,
+      dependencies: [useStackedLayout, measurementComplete, panels.length],
+      revertOnUpdate: true,
+    }
   );
 
   return (
     <div
       ref={containerRef}
       className={cn(
-        'story-scroll relative overflow-hidden',
-        shouldStack ? 'story-scroll--stacked' : 'min-h-screen [perspective:1200px]',
+        'story-scroll relative',
+        useStackedLayout
+          ? 'story-scroll--stacked overflow-visible'
+          : 'min-h-screen overflow-hidden [perspective:1200px]',
         className
       )}
-      data-story-mode={shouldStack ? 'stacked' : 'pinned'}
+      data-story-mode={useStackedLayout ? 'stacked' : 'pinned'}
+      data-story-stack-reason={useStackedLayout ? stackReason : undefined}
     >
       {panels.map((panel, index) => {
         const element = React.isValidElement(panel) ? panel : null;
         const theme = isStoryTheme(element?.props?.theme ?? null) ? element.props.theme : 'light';
         const label = typeof element?.props?.label === 'string' ? element.props.label : `Story panel ${index + 1}`;
-        const isInactivePinnedPanel = !shouldStack && index !== activeIndex;
+        const isInactivePinnedPanel = !useStackedLayout && index !== activeIndex;
 
         return (
           <div
@@ -188,7 +290,7 @@ const StoryScroll: React.FC<StoryScrollProps> = ({
             }}
             className={cn(
               'story-scroll-panel min-h-screen w-full',
-              shouldStack ? 'relative' : 'absolute inset-0'
+              useStackedLayout ? 'relative' : 'absolute inset-0'
             )}
             data-story-panel={index + 1}
             data-story-theme={theme}

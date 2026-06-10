@@ -91,12 +91,12 @@ Scope GSAP to the story primitive. `gsap` and `@gsap/react` belong in `src/compo
 Treat mobile and reduced-motion as core behavior, not polish:
 
 ```tsx
-const prefersReducedMotion = useMediaQuery('(prefers-reduced-motion: reduce)');
-const isMobile = useMediaQuery('(max-width: 767px)');
-const shouldStack = prefersReducedMotion || isMobile || panels.length <= 1;
+const forceStack = prefersReducedMotion || isMobile || panels.length <= 1;
+const useStackedLayout =
+  forceStack || contentExceedsViewport || (!forceStack && !measurementComplete);
 ```
 
-Desktop can get pinned kinetic panels. Mobile and reduced-motion users should get the same panels as readable stacked content. Do not create a separate mobile story, and do not hide essential content behind animation.
+Desktop can get pinned kinetic panels when every panel’s natural height fits within the viewport. Mobile, reduced-motion, and desktop overflow viewports get the same panels as readable stacked content. Measure in stacked geometry before enabling GSAP pin; default to stacked until measurement completes to avoid a flash of clipped pinned content. If any panel exceeds `document.documentElement.clientHeight`, fall back to stacked mode for the whole story (one-way per session). Do not create a separate mobile story, and do not hide essential content behind animation.
 
 Make the fixed header panel-aware. A global `scrollY > 50` rule is not enough when the header crosses light, dark, and accent panels. The working pattern dispatches the active story theme from `StoryScroll`:
 
@@ -140,7 +140,7 @@ Reliable conversion happens in Contact.
 
 Breaking that boundary makes the site either less memorable or more fragile.
 
-The accessibility and fallback rules also matter because scroll-driven designs can visually hide content while leaving it semantically reachable. In pinned desktop mode, inactive panels need `aria-hidden`/`inert`; in stacked fallback mode, all panels remain normal readable content. The mode changes the interaction, not the message.
+The accessibility and fallback rules also matter because scroll-driven designs can visually hide content while leaving it semantically reachable. In pinned desktop mode, inactive panels need `aria-hidden`/`inert`; in stacked fallback mode (mobile, reduced motion, or desktop overflow), all panels remain normal readable content with a single labelled landmark per panel on the wrapper — not duplicated on the inner `<section>`. The mode changes the interaction, not the message.
 
 ## When to Apply
 
@@ -190,7 +190,7 @@ snap: {
 Inactive pinned panels are hidden semantically, not just visually:
 
 ```tsx
-const isInactivePinnedPanel = !shouldStack && index !== activeIndex;
+const isInactivePinnedPanel = !useStackedLayout && index !== activeIndex;
 
 <div
   aria-hidden={isInactivePinnedPanel || undefined}
