@@ -51,8 +51,8 @@ Use this as the running checklist for what the human should understand about thi
 ### S2 — Reduced-motion handling is incomplete (Should-fix) ✅ FIXED
 
 - [x] **Lazy initializer fixes the flicker:** `useState(() => window.matchMedia(...).matches)` evaluates once at first render before any effect, so reduced-motion users get `shouldStack=true` immediately — no wasted GSAP mount cycle.
-- [x] **CSS rules don't stop JS animations:** Framer Motion uses `requestAnimationFrame` + direct `transform` writes, bypassing CSS `transition`/`animation` properties entirely. The global CSS rule in `index.css` only neutralizes CSS-driven motion.
-- [x] **`MotionConfig reducedMotion="user"`:** context-based override at the root of the tree. Every `motion.*` component in scope reads the user's OS `prefers-reduced-motion` and disables transforms/opacity transitions automatically — no per-component changes needed.
+- [x] **CSS rules don't stop JS animations:** GSAP uses `requestAnimationFrame` + direct `transform` writes, bypassing CSS `transition`/`animation` properties entirely. The global `prefers-reduced-motion` rule in `index.css` only neutralizes CSS-driven motion, so it cannot disable the pinned story scroll on its own.
+- [x] **Two-layer reduced-motion strategy (post-Framer removal):** all non-story micro-interactions are now CSS transitions/animations, so the global `index.css` rule (zeroing `animation`/`transition` duration *and* delay) disables them app-wide in one place — replacing the old `MotionConfig reducedMotion="user"` wrapper, which was deleted along with Framer Motion. The story scroll is the one rAF-driven exception: `prefersReducedMotion` feeds `forceStack`, so GSAP pinning never mounts for reduced-motion users.
 
 ### S3 — Contrast failures on accent panels (Should-fix) ✅ FIXED
 
@@ -74,3 +74,11 @@ Use this as the running checklist for what the human should understand about thi
 - [x] **Dedup came for free with B1:** the `activeIndexRef` early-return in `setActiveTheme` now suppresses duplicate dispatches without any new code. ScrollTrigger still fires `onUpdate` at ~60fps, but only real index changes propagate a `story-theme-change` event.
 - [x] **Dead prop removed:** `onActiveThemeChange` was declared, destructured, and called, but no caller ever passed it (`StoryScrollExperience` doesn't supply it). Removing it also lets `setActiveTheme`'s `useCallback` deps be `[]`, making the function reference stable across renders and avoiding a small re-run in the `useEffect` that depends on it.
 - [x] **Why keep the window event:** `Layout` mounts above `StoryScrollExperience` in the tree, and the `Header` is a sibling, not a descendant of the story scroll. A window event is a pragmatic decoupled bus when the data has to travel "sideways" across the tree without lifting state up. A cleaner long-term shape would be a context provider in `Layout`, but the event is fine for one consumer.
+
+### B2 — Pinned panels clip content taller than one viewport (Blocker) ✅ FIXED
+
+- [x] **Why pinned mode clips:** panel wrappers are `absolute inset-0` (viewport-sized) and `.story-scroll` uses `overflow-hidden`, so section content that naturally grows past 100vh is cut off.
+- [x] **Why stacked mode does not:** panel wrappers are `relative` with no height cap; sections expand to fit bullets, logos, and CTAs.
+- [x] **Measured impact (1512×856 desktop):** all 7 panels clip some content when pinned — e.g. panel 1 last bullet, panel 3 body + tags + logos, panel 7 CTA (159–419px overflow per panel).
+- [x] **Layers involved:** `story-scroll.tsx` (pin + absolute panels + overflow hidden) and `StoryPanel.tsx` (`min-h-screen overflow-hidden` section).
+- [x] **Fix shipped:** desktop now measures each panel section’s natural `scrollHeight` against `clientHeight` before enabling GSAP pin. If any panel exceeds the viewport, the entire story falls back to stacked mode (one-way for the session). `ResizeObserver` re-escalates if fonts/logos grow after load. Trade-off: kinetic pinned UX is sacrificed on viewports where content is taller than one screen — mode changes interaction, not message.

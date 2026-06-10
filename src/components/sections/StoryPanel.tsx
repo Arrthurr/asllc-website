@@ -37,7 +37,6 @@ const lineClasses: Record<StoryTheme, string> = {
 };
 
 const StoryPanel: React.FC<StoryPanelProps> = ({
-  label,
   eyebrow,
   heading,
   body,
@@ -54,9 +53,8 @@ const StoryPanel: React.FC<StoryPanelProps> = ({
 
   return (
     <section
-      aria-label={label}
       className={cn(
-        'relative flex min-h-screen items-center overflow-hidden px-5 py-28 sm:px-8 md:px-12 lg:px-16',
+        'relative flex min-h-screen items-center overflow-x-hidden px-5 py-28 sm:px-8 md:px-12 lg:px-16',
         themeClasses[theme]
       )}
     >
@@ -83,7 +81,13 @@ const StoryPanel: React.FC<StoryPanelProps> = ({
           <HeadingTag className="mb-7 break-words text-[clamp(2.65rem,14vw,5.5rem)] font-bold uppercase leading-[0.88] tracking-[-0.095em] md:text-[clamp(3.6rem,12vw,10.5rem)] md:leading-[0.82]">
             {heading}
           </HeadingTag>
-          <p className={cn('max-w-3xl text-xl leading-snug md:text-2xl lg:text-3xl', mutedTextClasses[theme])}>
+          <p
+            className={cn(
+              'max-w-3xl text-xl leading-snug md:text-2xl lg:text-3xl',
+              (variant === 'center' || variant === 'final') && 'mx-auto',
+              mutedTextClasses[theme]
+            )}
+          >
             {body}
           </p>
         </div>

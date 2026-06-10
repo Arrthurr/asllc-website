@@ -1,5 +1,4 @@
 import React, { useState } from 'react';
-import { motion } from 'framer-motion';
 import { Mail, MapPin } from 'lucide-react';
 import Section from '../ui/Section';
 import { Button } from '../ui/button';
@@ -44,11 +43,7 @@ const Contact: React.FC = () => {
   return (
     <Section id="contact" background="secondary" className="scroll-mt-20">
       <div className="grid grid-cols-1 gap-16 lg:grid-cols-2">
-        <motion.div
-          initial={{ opacity: 0, y: 30 }}
-          animate={{ opacity: 1, y: 0 }}
-          transition={{ duration: 0.6 }}
-        >
+        <div className="ease-out animate-in fade-in slide-in-from-bottom-[30px] [animation-duration:600ms]">
           <h2 className="mb-6 text-3xl font-bold md:text-5xl">Tell me where the work gets stuck.</h2>
           <p className="mb-8 text-xl text-gray-600">
             You do not need a polished AI idea. Send the annoying process, the repeated handoff, the report nobody wants to clean, or the follow-up that keeps slipping. I'll reply personally and help find the right first build — usually an AI Jumpstart.
@@ -80,13 +75,12 @@ const Contact: React.FC = () => {
               <p className="mb-0">“We bought AI tools but nobody knows what to automate first.”</p>
             </div>
           </div>
-        </motion.div>
-        
-        <motion.div
-          initial={{ opacity: 0, y: 30 }}
-          animate={{ opacity: 1, y: 0 }}
-          transition={{ duration: 0.6, delay: 0.2 }}
-        >
+        </div>
+
+        {/* animation-delay preserves the original ~0.2s stagger behind the first
+            column; fill-mode-both holds the hidden start state through the delay
+            (matching Framer's initial opacity:0) instead of flashing visible. */}
+        <div className="ease-out animate-in fade-in slide-in-from-bottom-[30px] fill-mode-both [animation-delay:200ms] [animation-duration:600ms]">
           <div className="rounded-lg bg-white p-8 shadow-xl">
             <h3 className="mb-6 text-2xl font-bold">Start with the bottleneck</h3>
             
@@ -196,7 +190,7 @@ const Contact: React.FC = () => {
                 </div>
               </form>
           </div>
-        </motion.div>
+        </div>
       </div>
     </Section>
   );

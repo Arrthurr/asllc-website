@@ -1,5 +1,4 @@
 import React from 'react';
-import { motion } from 'framer-motion';
 import { CheckCircle } from 'lucide-react';
 import Section from '../ui/Section';
 import { Button } from '../ui/button';
@@ -8,12 +7,7 @@ const Success: React.FC = () => {
   return (
     <Section background="secondary">
       <div className="mx-auto max-w-2xl text-center">
-        <motion.div
-          initial={{ opacity: 0, y: 30 }}
-          animate={{ opacity: 1, y: 0 }}
-          transition={{ duration: 0.6 }}
-          className="rounded-lg bg-white p-8 shadow-xl"
-        >
+        <div className="rounded-lg bg-white p-8 shadow-xl ease-out animate-in fade-in slide-in-from-bottom-[30px] [animation-duration:600ms]">
           <div className="flex flex-col items-center justify-center py-8">
             <div className="mb-4 text-primary">
               <CheckCircle className="h-16 w-16" />
@@ -29,7 +23,7 @@ const Success: React.FC = () => {
               Return to Home
             </Button>
           </div>
-        </motion.div>
+        </div>
       </div>
     </Section>
   );

@@ -22,4 +22,22 @@ test.describe('Homepage', () => {
     await expect(page.locator('[data-story-mode="stacked"]')).toBeVisible();
     await expect(page.getByRole('heading', { name: /scope small/i })).toBeVisible();
   });
+
+  test('desktop viewports with tall panels fall back to stacked story mode', async ({ page }) => {
+    await page.setViewportSize({ width: 1512, height: 856 });
+    await page.goto('/');
+
+    await expect(page.locator('[data-story-mode="stacked"]')).toBeVisible();
+    await expect(page.locator('[data-story-stack-reason="overflow"]')).toBeVisible();
+
+    await page.getByRole('heading', { name: /products, workflows, operations/i }).scrollIntoViewIfNeeded();
+    await expect(page.getByAltText('HG Jones Associates')).toBeVisible();
+
+    await page.getByRole('link', { name: /start the conversation/i }).scrollIntoViewIfNeeded();
+    await expect(page.getByRole('link', { name: /start the conversation/i })).toBeVisible();
+
+    await page.locator('#contact').scrollIntoViewIfNeeded();
+    await expect(page.locator('#contact')).toBeInViewport();
+    await expect(page.locator('#contact form[name="contact"]')).toBeVisible();
+  });
 });
