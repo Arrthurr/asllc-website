@@ -58,7 +58,7 @@ const StoryScroll: React.FC<StoryScrollProps> = ({
   const [contentExceedsViewport, setContentExceedsViewport] = useState(false);
   const [measurementComplete, setMeasurementComplete] = useState(false);
   const useStackedLayout =
-    forceStack || contentExceedsViewport || (!forceStack && !measurementComplete);
+    forceStack || contentExceedsViewport || !measurementComplete;
   const stackReason = useMemo((): StackReason | undefined => {
     if (prefersReducedMotion) return 'reduced-motion';
     if (isMobile) return 'mobile';
@@ -68,6 +68,12 @@ const StoryScroll: React.FC<StoryScrollProps> = ({
   }, [prefersReducedMotion, isMobile, panels.length, contentExceedsViewport]);
   const [activeIndex, setActiveIndex] = useState(0);
   const activeIndexRef = useRef(-1);
+
+  const escalateIfExceeds = useCallback(() => {
+    if (anyPanelExceedsViewport(panelRefs.current)) {
+      setContentExceedsViewport(true);
+    }
+  }, []);
 
   const setActiveTheme = useCallback((index: number) => {
     if (activeIndexRef.current === index) return;
@@ -103,37 +109,32 @@ const StoryScroll: React.FC<StoryScrollProps> = ({
     }
 
     let rafId = 0;
+    let innerRafId = 0;
     let debounceTimer: ReturnType<typeof setTimeout>;
 
     const measure = () => {
-      const exceeds = anyPanelExceedsViewport(panelRefs.current);
-      if (exceeds) {
-        setContentExceedsViewport(true);
-      }
+      escalateIfExceeds();
       setMeasurementComplete(true);
     };
 
     rafId = requestAnimationFrame(() => {
-      requestAnimationFrame(measure);
+      innerRafId = requestAnimationFrame(measure);
     });
 
     const handleResize = () => {
       clearTimeout(debounceTimer);
-      debounceTimer = setTimeout(() => {
-        if (anyPanelExceedsViewport(panelRefs.current)) {
-          setContentExceedsViewport(true);
-        }
-      }, 250);
+      debounceTimer = setTimeout(escalateIfExceeds, 250);
     };
 
     window.addEventListener('resize', handleResize);
 
     return () => {
       cancelAnimationFrame(rafId);
+      cancelAnimationFrame(innerRafId);
       clearTimeout(debounceTimer);
       window.removeEventListener('resize', handleResize);
     };
-  }, [forceStack, panels.length]);
+  }, [forceStack, panels.length, escalateIfExceeds]);
 
   useEffect(() => {
     if (useStackedLayout || !measurementComplete || forceStack) return;
@@ -142,16 +143,12 @@ const StoryScroll: React.FC<StoryScrollProps> = ({
       .map((panel) => panel?.querySelector('section'))
       .filter((section): section is HTMLElement => section instanceof HTMLElement);
 
-    const observer = new ResizeObserver(() => {
-      if (anyPanelExceedsViewport(panelRefs.current)) {
-        setContentExceedsViewport(true);
-      }
-    });
+    const observer = new ResizeObserver(escalateIfExceeds);
 
     sections.forEach((section) => observer.observe(section));
 
     return () => observer.disconnect();
-  }, [useStackedLayout, measurementComplete, forceStack, panels.length]);
+  }, [useStackedLayout, measurementComplete, forceStack, panels.length, escalateIfExceeds]);
 
   useEffect(() => {
     if (!useStackedLayout || !containerRef.current) return;

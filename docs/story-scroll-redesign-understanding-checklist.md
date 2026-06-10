@@ -51,8 +51,8 @@ Use this as the running checklist for what the human should understand about thi
 ### S2 — Reduced-motion handling is incomplete (Should-fix) ✅ FIXED
 
 - [x] **Lazy initializer fixes the flicker:** `useState(() => window.matchMedia(...).matches)` evaluates once at first render before any effect, so reduced-motion users get `shouldStack=true` immediately — no wasted GSAP mount cycle.
-- [x] **CSS rules don't stop JS animations:** Framer Motion uses `requestAnimationFrame` + direct `transform` writes, bypassing CSS `transition`/`animation` properties entirely. The global CSS rule in `index.css` only neutralizes CSS-driven motion.
-- [x] **`MotionConfig reducedMotion="user"`:** context-based override at the root of the tree. Every `motion.*` component in scope reads the user's OS `prefers-reduced-motion` and disables transforms/opacity transitions automatically — no per-component changes needed.
+- [x] **CSS rules don't stop JS animations:** GSAP uses `requestAnimationFrame` + direct `transform` writes, bypassing CSS `transition`/`animation` properties entirely. The global `prefers-reduced-motion` rule in `index.css` only neutralizes CSS-driven motion, so it cannot disable the pinned story scroll on its own.
+- [x] **Two-layer reduced-motion strategy (post-Framer removal):** all non-story micro-interactions are now CSS transitions/animations, so the global `index.css` rule (zeroing `animation`/`transition` duration *and* delay) disables them app-wide in one place — replacing the old `MotionConfig reducedMotion="user"` wrapper, which was deleted along with Framer Motion. The story scroll is the one rAF-driven exception: `prefersReducedMotion` feeds `forceStack`, so GSAP pinning never mounts for reduced-motion users.
 
 ### S3 — Contrast failures on accent panels (Should-fix) ✅ FIXED
 

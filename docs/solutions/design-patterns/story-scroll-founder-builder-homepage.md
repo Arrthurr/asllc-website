@@ -46,12 +46,10 @@ The homepage composition should stay intentionally small:
 
 ```tsx
 // src/App.tsx
-<MotionConfig reducedMotion="user">
-  <Layout>
-    <StoryScrollExperience />
-    <Contact />
-  </Layout>
-</MotionConfig>
+<Layout>
+  <StoryScrollExperience />
+  <Contact />
+</Layout>
 ```
 
 Do not reintroduce the old `Hero`, `Services`, `About`, `Clients`, or `CaseStudies` sections into the main route unless the product strategy changes. Keeping those sections out of the route is what prevents the page from slipping back into a standard agency brochure.
@@ -86,14 +84,14 @@ Keep the tonal transition:
 
 That boundary matters. The scroll story creates conviction; the contact section lowers friction.
 
-Scope GSAP to the story primitive. `gsap` and `@gsap/react` belong in `src/components/ui/story-scroll.tsx`; keep Framer Motion for the existing non-story transitions.
+Scope GSAP to the story primitive. `gsap` and `@gsap/react` belong in `src/components/ui/story-scroll.tsx` and nowhere else. There is no general-purpose animation library in this app: every non-story micro-interaction (Card hover, Section scroll-in, Header menu, BackToTop, Contact two-column stagger) is a plain CSS transition/animation, and any mount/unmount that needs an exit animation goes through the `useExitTransition` hook (`src/hooks/useExitTransition.ts`), which drives mount/unmount off the CSS `transitionend` event. Do not reintroduce Framer Motion or another runtime animation dependency for these surfaces.
 
 Treat mobile and reduced-motion as core behavior, not polish:
 
 ```tsx
 const forceStack = prefersReducedMotion || isMobile || panels.length <= 1;
 const useStackedLayout =
-  forceStack || contentExceedsViewport || (!forceStack && !measurementComplete);
+  forceStack || contentExceedsViewport || !measurementComplete;
 ```
 
 Desktop can get pinned kinetic panels when every panel’s natural height fits within the viewport. Mobile, reduced-motion, and desktop overflow viewports get the same panels as readable stacked content. Measure in stacked geometry before enabling GSAP pin; default to stacked until measurement completes to avoid a flash of clipped pinned content. If any panel exceeds `document.documentElement.clientHeight`, fall back to stacked mode for the whole story (one-way per session). Do not create a separate mobile story, and do not hide essential content behind animation.
@@ -202,16 +200,22 @@ const isInactivePinnedPanel = !useStackedLayout && index !== activeIndex;
 
 This rule only applies in pinned mode. In stacked mobile/reduced-motion mode, every panel remains part of normal reading and focus order.
 
-The root motion config makes Framer Motion respect reduced-motion preferences across the app:
+Reduced-motion is honored app-wide by a single global CSS rule, not a runtime config. Because all non-story motion is now CSS-driven, neutralizing CSS animations and transitions there covers every former-Framer surface in one place:
 
-```tsx
-<MotionConfig reducedMotion="user">
-  <Layout>
-    <StoryScrollExperience />
-    <Contact />
-  </Layout>
-</MotionConfig>
+```css
+/* src/index.css */
+@media (prefers-reduced-motion: reduce) {
+  *, *::before, *::after {
+    animation-duration: 0.01ms !important;
+    animation-delay: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+    transition-delay: 0.01ms !important;
+  }
+}
 ```
+
+The story scroll handles reduced-motion separately: `prefersReducedMotion` forces stacked mode (`forceStack`) so GSAP pinning never mounts. The CSS rule above does not stop GSAP, which writes transforms via `requestAnimationFrame`; the stacked-mode fallback is what protects reduced-motion users there.
 
 The contact form stays native:
 
