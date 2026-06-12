@@ -20,6 +20,7 @@ test.describe('Homepage', () => {
     await page.goto('/');
 
     await expect(page.locator('[data-story-mode="stacked"]')).toBeVisible();
+    await expect(page.locator('[data-story-kinetic="stacked-scrub"]')).toHaveCount(0);
     await expect(page.getByRole('heading', { name: /scope small/i })).toBeVisible();
   });
 
@@ -29,6 +30,7 @@ test.describe('Homepage', () => {
 
     await expect(page.locator('[data-story-mode="stacked"]')).toBeVisible();
     await expect(page.locator('[data-story-stack-reason="overflow"]')).toBeVisible();
+    await expect(page.locator('[data-story-kinetic="stacked-scrub"]')).toBeVisible();
 
     await page.getByRole('heading', { name: /products, workflows, operations/i }).scrollIntoViewIfNeeded();
     await expect(page.getByAltText('HG Jones Associates')).toBeVisible();
@@ -38,6 +40,79 @@ test.describe('Homepage', () => {
 
     await page.locator('#contact').scrollIntoViewIfNeeded();
     await expect(page.locator('#contact')).toBeInViewport();
+    await expect(page.locator('#contact form[name="contact"]')).toBeVisible();
+  });
+
+  test('desktop overflow stacked story animates panels during scroll', async ({ page }) => {
+    await page.setViewportSize({ width: 1512, height: 856 });
+    await page.goto('/');
+
+    await expect(page.locator('[data-story-kinetic="stacked-scrub"]')).toBeVisible();
+
+    const panel2 = page.locator('[data-story-panel="2"]');
+
+    const readPanelMotion = () =>
+      panel2.evaluate((el) => {
+        const style = window.getComputedStyle(el);
+        const opacity = Number.parseFloat(style.opacity);
+        const matrix = new DOMMatrix(style.transform);
+        return { opacity, translateY: matrix.m42 };
+      });
+
+    const scrollInstant = (scrollY: number) =>
+      page.evaluate((y) => {
+        window.scrollTo({ top: y, behavior: 'instant' });
+      }, scrollY);
+
+    const settleFrames = () =>
+      page.evaluate(
+        () =>
+          new Promise<void>((resolve) => {
+            requestAnimationFrame(() => requestAnimationFrame(() => resolve()));
+          })
+      );
+
+    const scrollPositions = await page.evaluate(() => {
+      const panel = document.querySelector('[data-story-panel="2"]') as HTMLElement | null;
+      if (!panel) {
+        throw new Error('Story panel 2 not found');
+      }
+
+      const panelTop = panel.getBoundingClientRect().top + window.scrollY;
+      const viewportHeight = window.innerHeight;
+
+      return {
+        beforeEnter: Math.max(0, panelTop - viewportHeight * 0.95),
+        midEnter: Math.max(0, panelTop - viewportHeight * 0.55),
+      };
+    });
+
+    await scrollInstant(scrollPositions.beforeEnter);
+    await settleFrames();
+    const beforeEnter = await readPanelMotion();
+
+    await scrollInstant(scrollPositions.midEnter);
+    await settleFrames();
+    const midEnter = await readPanelMotion();
+
+    expect(midEnter.opacity).toBeGreaterThan(beforeEnter.opacity);
+    expect(Math.abs(midEnter.translateY)).toBeLessThan(Math.abs(beforeEnter.translateY));
+  });
+
+  test('tall desktop viewports use pinned story mode without stacked scrub', async ({ page }) => {
+    await page.setViewportSize({ width: 1512, height: 1400 });
+    await page.goto('/');
+
+    await expect(page.locator('[data-story-mode="pinned"]')).toBeVisible({ timeout: 10_000 });
+    await expect(page.locator('[data-story-kinetic="stacked-scrub"]')).toHaveCount(0);
+  });
+
+  test('contact section retains CSS entrance after scrolling through the story', async ({ page }) => {
+    await page.setViewportSize({ width: 1512, height: 856 });
+    await page.goto('/');
+
+    await page.locator('#contact').scrollIntoViewIfNeeded();
+    await expect(page.locator('#contact .animate-in').first()).toBeVisible();
     await expect(page.locator('#contact form[name="contact"]')).toBeVisible();
   });
 });

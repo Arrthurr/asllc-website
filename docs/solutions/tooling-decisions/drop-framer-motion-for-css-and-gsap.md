@@ -26,7 +26,7 @@ tags: [framer-motion, css-animations, gsap, reduced-motion, exit-transition, rea
 
 ## Context
 
-The homepage already ran two animation engines. GSAP (`gsap` + `@gsap/react`) drove the pinned, scroll-kinetic story-scroll primitive. Framer Motion (`framer-motion`, ~40 kB gzipped) was carried only for a handful of trivial, declarative micro-interactions on non-story surfaces: a card hover lift, a section scroll-in fade, the mobile menu open/close, a back-to-top button, and the two-column stagger on the Contact section.
+The homepage already ran two animation engines. GSAP (`gsap` + `@gsap/react`) drove the story-scroll primitive (pinned pin/scrub when panels fit; since Jun 2026 also stacked scroll-progress scrub when desktop panels overflow). Framer Motion (`framer-motion`, ~40 kB gzipped) was carried only for a handful of trivial, declarative micro-interactions on non-story surfaces: a card hover lift, a section scroll-in fade, the mobile menu open/close, a back-to-top button, and the two-column stagger on the Contact section.
 
 That is a large runtime dependency earning its keep on about seven sites, none of which needed a physics/spring engine or layout animation — each was a fixed-duration opacity/transform tween that CSS expresses natively. The one genuinely non-trivial thing Framer provided was `AnimatePresence`: keeping an element mounted through its exit animation before unmounting. Everything else was a `transition`/`@keyframes` in disguise.
 
@@ -58,7 +58,9 @@ Map each interaction to the cheapest mechanism that reproduces it:
 }
 ```
 
-GSAP is the deliberate exception: CSS cannot stop it (see below), so the story-scroll handles reduced motion separately via `forceStack` (it never mounts the pin). The two layers together cover the whole app.
+GSAP is the deliberate exception: CSS cannot stop it (see below), so the story-scroll handles reduced motion separately via `forceStack` (it never mounts pinned or stacked-scrub timelines). Mobile visitors get stacked static mode. The two layers together cover the whole app.
+
+**GSAP’s dual role in story-scroll (Jun 2026):** pinned mode uses container pin + scrub + snap; stacked overflow mode uses per-panel scrub timelines without pin (`data-story-kinetic="stacked-scrub"`). Both paths stay inside `src/components/ui/story-scroll.tsx` — do not spread GSAP to Contact, Header, or other chrome.
 
 **Use `useExitTransition` to replace `AnimatePresence`.** Re-implementing presence is only safe if it covers the edge cases the library already handled. The hook (`src/hooks/useExitTransition.ts`) keeps an element mounted through its exit transition and:
 
