@@ -1,4 +1,5 @@
 import { expect, test } from '@playwright/test';
+import { waitForStoryMeasurement } from './helpers/story-scroll';
 
 test.describe('Homepage', () => {
   test('story promise and contact form are reachable', async ({ page }) => {
@@ -121,10 +122,12 @@ test.describe('Homepage', () => {
   });
 
   test('tall desktop viewports use pinned story mode without stacked scrub', async ({ page }) => {
-    await page.setViewportSize({ width: 1512, height: 1400 });
-    await page.goto('/');
+    // 1600px height gives headroom for Linux CI font metrics after Inter loads.
+    await page.setViewportSize({ width: 1512, height: 1600 });
+    await page.goto('/', { waitUntil: 'networkidle' });
+    await waitForStoryMeasurement(page);
 
-    await expect(page.locator('[data-story-mode="pinned"]')).toBeVisible({ timeout: 10_000 });
+    await expect(page.locator('[data-story-mode="pinned"]')).toBeVisible();
     await expect(page.locator('[data-story-kinetic="stacked-scrub"]')).toHaveCount(0);
   });
 

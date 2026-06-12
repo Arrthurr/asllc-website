@@ -103,18 +103,30 @@ const StoryScroll: React.FC<StoryScrollProps> = ({
       return;
     }
 
+    let cancelled = false;
     let rafId = 0;
     let innerRafId = 0;
     let debounceTimer: ReturnType<typeof setTimeout>;
 
     const measure = () => {
+      if (cancelled) return;
       escalateIfExceeds();
       setMeasurementComplete(true);
     };
 
-    rafId = requestAnimationFrame(() => {
-      innerRafId = requestAnimationFrame(measure);
-    });
+    const scheduleMeasure = () => {
+      if (cancelled) return;
+      rafId = requestAnimationFrame(() => {
+        innerRafId = requestAnimationFrame(measure);
+      });
+    };
+
+    const fontsReady =
+      typeof document !== 'undefined' && document.fonts?.ready
+        ? document.fonts.ready
+        : Promise.resolve();
+
+    void fontsReady.then(scheduleMeasure);
 
     const handleResize = () => {
       clearTimeout(debounceTimer);
@@ -124,6 +136,7 @@ const StoryScroll: React.FC<StoryScrollProps> = ({
     window.addEventListener('resize', handleResize);
 
     return () => {
+      cancelled = true;
       cancelAnimationFrame(rafId);
       cancelAnimationFrame(innerRafId);
       clearTimeout(debounceTimer);
