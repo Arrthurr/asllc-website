@@ -3,6 +3,9 @@ import { useGSAP } from '@gsap/react';
 import gsap from 'gsap';
 import { ScrollTrigger } from 'gsap/ScrollTrigger';
 import { cn } from '@/lib/utils';
+import { anyPanelExceedsViewport } from './story-scroll-measurement';
+
+gsap.registerPlugin(ScrollTrigger);
 
 export type StoryTheme = 'light' | 'dark' | 'accent';
 
@@ -35,16 +38,6 @@ const useMediaQuery = (query: string) => {
   return matches;
 };
 
-const panelContentExceedsViewport = (panel: HTMLDivElement | undefined) => {
-  if (!panel) return false;
-  const section = panel.querySelector('section');
-  if (!section) return false;
-  return section.scrollHeight > document.documentElement.clientHeight;
-};
-
-const anyPanelExceedsViewport = (panels: HTMLDivElement[]) =>
-  panels.some(panelContentExceedsViewport);
-
 const StoryScroll: React.FC<StoryScrollProps> = ({
   children,
   className,
@@ -59,6 +52,8 @@ const StoryScroll: React.FC<StoryScrollProps> = ({
   const [measurementComplete, setMeasurementComplete] = useState(false);
   const useStackedLayout =
     forceStack || contentExceedsViewport || !measurementComplete;
+  const stackedKineticActive =
+    useStackedLayout && !forceStack && measurementComplete;
   const stackReason = useMemo((): StackReason | undefined => {
     if (prefersReducedMotion) return 'reduced-motion';
     if (isMobile) return 'mobile';
@@ -108,18 +103,30 @@ const StoryScroll: React.FC<StoryScrollProps> = ({
       return;
     }
 
+    let cancelled = false;
     let rafId = 0;
     let innerRafId = 0;
     let debounceTimer: ReturnType<typeof setTimeout>;
 
     const measure = () => {
+      if (cancelled) return;
       escalateIfExceeds();
       setMeasurementComplete(true);
     };
 
-    rafId = requestAnimationFrame(() => {
-      innerRafId = requestAnimationFrame(measure);
-    });
+    const scheduleMeasure = () => {
+      if (cancelled) return;
+      rafId = requestAnimationFrame(() => {
+        innerRafId = requestAnimationFrame(measure);
+      });
+    };
+
+    const fontsReady =
+      typeof document !== 'undefined' && document.fonts?.ready
+        ? document.fonts.ready
+        : Promise.resolve();
+
+    void fontsReady.then(scheduleMeasure);
 
     const handleResize = () => {
       clearTimeout(debounceTimer);
@@ -129,6 +136,7 @@ const StoryScroll: React.FC<StoryScrollProps> = ({
     window.addEventListener('resize', handleResize);
 
     return () => {
+      cancelled = true;
       cancelAnimationFrame(rafId);
       cancelAnimationFrame(innerRafId);
       clearTimeout(debounceTimer);
@@ -175,6 +183,96 @@ const StoryScroll: React.FC<StoryScrollProps> = ({
   useGSAP(
     () => {
       if (
+        !stackedKineticActive ||
+        !containerRef.current ||
+        panels.length <= 1
+      ) {
+        return;
+      }
+
+      const panelElements = panelRefs.current.filter(Boolean);
+      const timelines: gsap.core.Timeline[] = [];
+
+      panelElements.forEach((panel, index) => {
+        const isProofPanel = panel.dataset.storyVariant === 'proof';
+        const enterYPercent = isProofPanel ? 4 : 8;
+        const exitYPercent = isProofPanel ? -4 : -8;
+        const minScale = isProofPanel ? 0.98 : 0.96;
+        const enterOpacity = isProofPanel ? 0.9 : 0.88;
+        const exitOpacity = isProofPanel ? 0.82 : 0.76;
+        const isHeroPanel = index === 0;
+
+        gsap.set(panel, { transformOrigin: '50% 80%' });
+
+        if (isHeroPanel) {
+          gsap.set(panel, { yPercent: 0, opacity: 1, scale: 1 });
+          const timeline = gsap.timeline({
+            scrollTrigger: {
+              trigger: panel,
+              start: 'top top',
+              end: 'bottom top',
+              scrub: 0.4,
+              invalidateOnRefresh: true,
+            },
+          });
+          timeline.to(panel, {
+            yPercent: exitYPercent,
+            opacity: exitOpacity,
+            scale: minScale,
+            ease: 'none',
+            duration: 1,
+          });
+          timelines.push(timeline);
+          return;
+        }
+
+        const timeline = gsap.timeline({
+          scrollTrigger: {
+            trigger: panel,
+            start: 'top 85%',
+            end: 'top 15%',
+            scrub: 0.4,
+            invalidateOnRefresh: true,
+          },
+        });
+
+        timeline
+          .fromTo(
+            panel,
+            { yPercent: enterYPercent, opacity: enterOpacity, scale: minScale },
+            { yPercent: 0, opacity: 1, scale: 1, ease: 'none', duration: 0.4 }
+          )
+          .to(panel, {
+            yPercent: exitYPercent,
+            opacity: exitOpacity,
+            scale: minScale,
+            ease: 'none',
+            duration: 0.6,
+          });
+
+        timelines.push(timeline);
+      });
+
+      requestAnimationFrame(() => ScrollTrigger.refresh());
+
+      return () => {
+        timelines.forEach((timeline) => {
+          timeline.scrollTrigger?.kill();
+          timeline.kill();
+        });
+        gsap.set(panelElements, { clearProps: 'transform,opacity' });
+      };
+    },
+    {
+      scope: containerRef,
+      dependencies: [stackedKineticActive, measurementComplete, panels.length],
+      revertOnUpdate: true,
+    }
+  );
+
+  useGSAP(
+    () => {
+      if (
         useStackedLayout ||
         !measurementComplete ||
         !containerRef.current ||
@@ -183,7 +281,6 @@ const StoryScroll: React.FC<StoryScrollProps> = ({
         return;
       }
 
-      gsap.registerPlugin(ScrollTrigger);
       ScrollTrigger.normalizeScroll(true);
 
       const panelElements = panelRefs.current.filter(Boolean);
@@ -272,10 +369,13 @@ const StoryScroll: React.FC<StoryScrollProps> = ({
       )}
       data-story-mode={useStackedLayout ? 'stacked' : 'pinned'}
       data-story-stack-reason={useStackedLayout ? stackReason : undefined}
+      data-story-kinetic={stackedKineticActive ? 'stacked-scrub' : undefined}
     >
       {panels.map((panel, index) => {
         const element = React.isValidElement(panel) ? panel : null;
         const theme = isStoryTheme(element?.props?.theme ?? null) ? element.props.theme : 'light';
+        const variant =
+          typeof element?.props?.variant === 'string' ? element.props.variant : undefined;
         const label = typeof element?.props?.label === 'string' ? element.props.label : `Story panel ${index + 1}`;
         const isInactivePinnedPanel = !useStackedLayout && index !== activeIndex;
 
@@ -290,6 +390,7 @@ const StoryScroll: React.FC<StoryScrollProps> = ({
               useStackedLayout ? 'relative' : 'absolute inset-0'
             )}
             data-story-panel={index + 1}
+            data-story-variant={variant}
             data-story-theme={theme}
             aria-label={label}
             aria-hidden={isInactivePinnedPanel || undefined}
