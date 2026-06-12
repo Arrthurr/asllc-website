@@ -15,6 +15,16 @@ test.describe('Homepage', () => {
     await expect(page.locator('#contact')).toBeInViewport();
   });
 
+  test('mobile visitors get stacked static story without kinetic scrub', async ({ page }) => {
+    await page.setViewportSize({ width: 375, height: 812 });
+    await page.goto('/');
+
+    await expect(page.locator('[data-story-mode="stacked"]')).toBeVisible();
+    await expect(page.locator('[data-story-stack-reason="mobile"]')).toBeVisible();
+    await expect(page.locator('[data-story-kinetic="stacked-scrub"]')).toHaveCount(0);
+    await expect(page.getByRole('heading', { name: /working ai/i })).toBeVisible();
+  });
+
   test('reduced-motion visitors get a stacked story surface', async ({ page }) => {
     await page.emulateMedia({ reducedMotion: 'reduce' });
     await page.goto('/');
@@ -48,6 +58,17 @@ test.describe('Homepage', () => {
     await page.goto('/');
 
     await expect(page.locator('[data-story-kinetic="stacked-scrub"]')).toBeVisible();
+
+    const panel1 = page.locator('[data-story-panel="1"]');
+    const panel1Style = await panel1.evaluate((el) => {
+      const style = window.getComputedStyle(el);
+      return {
+        opacity: Number.parseFloat(style.opacity),
+        translateY: new DOMMatrix(style.transform).m42,
+      };
+    });
+    expect(panel1Style.opacity).toBeGreaterThan(0.95);
+    expect(Math.abs(panel1Style.translateY)).toBeLessThan(5);
 
     const panel2 = page.locator('[data-story-panel="2"]');
 
