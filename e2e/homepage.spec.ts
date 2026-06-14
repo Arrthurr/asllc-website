@@ -78,7 +78,16 @@ test.describe('Homepage', () => {
         const style = window.getComputedStyle(el);
         const opacity = Number.parseFloat(style.opacity);
         const matrix = new DOMMatrix(style.transform);
-        return { opacity, translateY: matrix.m42 };
+        const rect = el.getBoundingClientRect();
+        return {
+          opacity,
+          scaleX: matrix.a,
+          translateY: matrix.m42,
+          rectLeft: rect.left,
+          rectRight: rect.right,
+          rectWidth: rect.width,
+          viewportWidth: window.innerWidth,
+        };
       });
 
     const scrollInstant = (scrollY: number) =>
@@ -119,6 +128,14 @@ test.describe('Homepage', () => {
 
     expect(midEnter.opacity).toBeGreaterThan(beforeEnter.opacity);
     expect(Math.abs(midEnter.translateY)).toBeLessThan(Math.abs(beforeEnter.translateY));
+    expect(beforeEnter.scaleX).toBeCloseTo(1, 4);
+    expect(midEnter.scaleX).toBeCloseTo(1, 4);
+    expect(Math.abs(beforeEnter.rectLeft)).toBeLessThan(2);
+    expect(Math.abs(midEnter.rectLeft)).toBeLessThan(2);
+    expect(Math.abs(beforeEnter.rectRight - beforeEnter.viewportWidth)).toBeLessThan(2);
+    expect(Math.abs(midEnter.rectRight - midEnter.viewportWidth)).toBeLessThan(2);
+    expect(beforeEnter.rectWidth).toBeCloseTo(beforeEnter.viewportWidth, 0);
+    expect(midEnter.rectWidth).toBeCloseTo(midEnter.viewportWidth, 0);
   });
 
   test('tall desktop viewports use pinned story mode without stacked scrub', async ({ page }) => {

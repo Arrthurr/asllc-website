@@ -87,6 +87,6 @@ Use this as the running checklist for what the human should understand about thi
 
 - [x] **Why typical laptops saw no motion:** at 1512×856 all seven panels overflow, so overflow stacked mode activated with only `IntersectionObserver` theme updates — no GSAP timelines.
 - [x] **Three-mode model:** pinned kinetic (panels fit), stacked kinetic (`data-story-kinetic="stacked-scrub"` on desktop overflow), stacked static (mobile / reduced-motion / single-panel).
-- [x] **Stacked kinetic mechanics:** per-panel `ScrollTrigger` scrub on panel wrappers (`yPercent`, opacity, scale at ~50% pinned amplitudes; no `rotateX`; panel 3 proof uses lower caps). No pin, no `normalizeScroll`, no snap.
+- [x] **Stacked kinetic mechanics:** per-panel `ScrollTrigger` scrub on panel wrappers (`yPercent` and opacity only; no wrapper `scale` or `rotateX`). No pin, no `normalizeScroll`, no snap. Wrapper scale was removed because it shrank the full-bleed panel background and exposed left/right page gutters during scrub.
 - [x] **Manual verification:** 1512×856 scroll-through feels kinetic (not just attribute presence); panel 3 proof content readable at settle; 1512×1400 pinned regression unchanged.
 - [x] **Bundle baseline (pre-feature, 2026-06-12):** production gzipped JS 116.25 kB + CSS 5.35 kB = **121.60 kB total** (normal Vite build, un-split). Post-ship total must stay at or below this figure.
