@@ -197,7 +197,6 @@ const StoryScroll: React.FC<StoryScrollProps> = ({
         const isProofPanel = panel.dataset.storyVariant === 'proof';
         const enterYPercent = isProofPanel ? 4 : 8;
         const exitYPercent = isProofPanel ? -4 : -8;
-        const minScale = isProofPanel ? 0.98 : 0.96;
         const enterOpacity = isProofPanel ? 0.9 : 0.88;
         const exitOpacity = isProofPanel ? 0.82 : 0.76;
         const isHeroPanel = index === 0;
@@ -205,7 +204,7 @@ const StoryScroll: React.FC<StoryScrollProps> = ({
         gsap.set(panel, { transformOrigin: '50% 80%' });
 
         if (isHeroPanel) {
-          gsap.set(panel, { yPercent: 0, opacity: 1, scale: 1 });
+          gsap.set(panel, { yPercent: 0, opacity: 1 });
           const timeline = gsap.timeline({
             scrollTrigger: {
               trigger: panel,
@@ -218,7 +217,6 @@ const StoryScroll: React.FC<StoryScrollProps> = ({
           timeline.to(panel, {
             yPercent: exitYPercent,
             opacity: exitOpacity,
-            scale: minScale,
             ease: 'none',
             duration: 1,
           });
@@ -239,13 +237,12 @@ const StoryScroll: React.FC<StoryScrollProps> = ({
         timeline
           .fromTo(
             panel,
-            { yPercent: enterYPercent, opacity: enterOpacity, scale: minScale },
-            { yPercent: 0, opacity: 1, scale: 1, ease: 'none', duration: 0.4 }
+            { yPercent: enterYPercent, opacity: enterOpacity },
+            { yPercent: 0, opacity: 1, ease: 'none', duration: 0.4 }
           )
           .to(panel, {
             yPercent: exitYPercent,
             opacity: exitOpacity,
-            scale: minScale,
             ease: 'none',
             duration: 0.6,
           });

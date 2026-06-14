@@ -97,12 +97,12 @@ const useStackedLayout =
 The story scroll runs three modes:
 
 1. **Pinned kinetic** (`data-story-mode="pinned"`) — when every panel’s natural height fits within the viewport. GSAP pins the story container and scrubs panel transitions with snap.
-2. **Stacked kinetic** (`data-story-mode="stacked"`, `data-story-stack-reason="overflow"`, `data-story-kinetic="stacked-scrub"`) — when desktop panels overflow the viewport. Panels stay in normal document flow; GSAP runs per-panel `ScrollTrigger` scrub timelines for boundary enter/exit (no pin, no snap). This is the canonical kinetic surface for typical laptop viewports (~1512×856), not a GSAP-free fallback.
+2. **Stacked kinetic** (`data-story-mode="stacked"`, `data-story-stack-reason="overflow"`, `data-story-kinetic="stacked-scrub"`) — when desktop panels overflow the viewport. Panels stay in normal document flow; GSAP runs per-panel `ScrollTrigger` scrub timelines for boundary enter/exit (no pin, no snap). This is the canonical kinetic surface for typical laptop viewports (~1512×856), not a GSAP-free fallback. Keep stacked wrapper transforms to `yPercent` and opacity only: scaling the wrapper also scales the full-bleed panel background and creates visible left/right gutters during scrub.
 3. **Stacked static** (`data-story-mode="stacked"` with `data-story-stack-reason` of `mobile`, `reduced-motion`, or `single-panel`) — same readable stacked content without GSAP timelines.
 
 Measure in stacked geometry before enabling GSAP pin; default to stacked until measurement completes to avoid a flash of clipped pinned content. If any panel exceeds `document.documentElement.clientHeight`, fall back to stacked mode for the whole story (one-way per session). Do not create a separate mobile story, and do not hide essential content behind animation.
 
-**Maintenance:** StoryPanel content or layout changes require re-verifying stacked scrub at 1512×856 (especially panel 3 proof logos/tags) and pinned behavior at 1512×1400.
+**Maintenance:** StoryPanel content or layout changes require re-verifying stacked scrub at 1512×856 (especially panel 3 proof logos/tags and edge-to-edge panel bounds) and pinned behavior at 1512×1400.
 
 Make the fixed header panel-aware. A global `scrollY > 50` rule is not enough when the header crosses light, dark, and accent panels. The working pattern dispatches the active story theme from `StoryScroll`:
 
