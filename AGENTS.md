@@ -146,3 +146,12 @@ Known outstanding tasks:
 - Consider in-panel child reveals only if boundary-only stacked kinetic motion feels too flat.
 - Consider visual-regression GIF capture and INP/scroll-jank gates if animation regressions recur.
 
+## Cursor Cloud specific instructions
+
+This is a static, client-only Vite site: no backend, database, or secrets are required to develop or test it.
+
+- Standard commands live in `package.json` scripts and the Verification section above (`npm run lint`, `npm run test`, `npm run build`, `npm run test:e2e`). Do not duplicate them here.
+- Dev server: `npm run dev` (Vite, defaults to port 5173). Playwright's e2e suite runs against `npm run preview` on `127.0.0.1:4173`, and its `webServer` config starts/reuses that preview automatically.
+- The contact form submits a native POST to `/success` (Netlify Forms). That route only exists on Netlify, so locally (dev, preview, and after `npm run build`) submitting the form navigates to a 404. This is expected, not a bug — form field entry and the native POST are the local-testable behavior.
+- CI (`.github/workflows/ci.yml`) pins Node 20; the site also builds and passes all suites on Node 22.
+
