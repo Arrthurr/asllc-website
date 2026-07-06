@@ -1,0 +1,6 @@
+# Legacy Vite SPA — Next.js branch should not upload or serve these
+index.html
+src/
+vite.config.ts
+coverage/
+nuggets-design-main/
