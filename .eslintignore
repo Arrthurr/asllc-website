@@ -1,0 +1,5 @@
+src/
+coverage/
+nuggets-design-main/
+e2e/
+vite.config.ts

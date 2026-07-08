@@ -1,10 +1,10 @@
-name: CI
+name: Next.js CI
 
 on:
   push:
-    branches: [main]
+    branches: [feat/nextjs-nuggets]
   pull_request:
-    branches: [main]
+    branches: [feat/nextjs-nuggets]
 
 jobs:
   quality:
